@@ -12,7 +12,7 @@
 
 
 /*-----------------------------------*\
-  #CUSTOM PROPERTY
+  #CUSTOM PROPERTY=  --eerie-black-1: hsl(194, 55%, 0%);
 \*-----------------------------------*/
 
 :root {
@@ -65,7 +65,9 @@
 
   --jet: hsl(0, 0%, 22%);
   --onyx: hsl(240, 1%, 17%);
-  --eerie-black-1: hsl(194, 55%, 0%);
+  --eerie-black-1: linear-gradient( 
+    hsl(194, 55%, 0%), 
+    hsl(313, 100%, 50%),
   --eerie-black-2: hsl(194, 55%, 0%);
   --smoky-black: hsl(194, 55%, 55%);
   --white-1: hsl(0, 0%, 100%);
