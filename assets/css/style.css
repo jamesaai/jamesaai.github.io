@@ -1887,3 +1887,71 @@ textarea.form-input::-webkit-resizer { display: none; }
   .timeline-text { max-width: 700px; }
 
 }
+/** 
+	*CHATGPT
+*/
+/* Fade-in effect for sections */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Progress bar animation */
+@keyframes fillProgress {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+/* Apply animation to the article */
+.resume {
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Animate each timeline item */
+.timeline-item {
+  animation: fadeIn 1s ease-in-out;
+  animation-delay: 0.3s;
+}
+
+/* Skills progress bar effect */
+.skill-progress-fill {
+  animation: fillProgress 1.5s ease-out;
+  animation-delay: 0.3s;
+}
+
+/* Staggered appearance for items */
+.timeline-list li {
+  animation: fadeIn 1s ease-in-out;
+  opacity: 0;
+}
+.timeline-list li:nth-child(1) {
+  animation-delay: 0.3s;
+  opacity: 1;
+}
+.timeline-list li:nth-child(2) {
+  animation-delay: 0.6s;
+  opacity: 1;
+}
+.timeline-list li:nth-child(3) {
+  animation-delay: 0.9s;
+  opacity: 1;
+}
+
+/* Transition for hovering over icons */
+.icon-box {
+  transition: transform 0.3s ease-in-out;
+}
+.icon-box:hover {
+  transform: scale(1.2);
+}
+
