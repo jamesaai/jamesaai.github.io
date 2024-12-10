@@ -1954,4 +1954,32 @@ textarea.form-input::-webkit-resizer { display: none; }
 .icon-box:hover {
   transform: scale(1.2);
 }
+ /* chatgpt 3.1 */ 
+@keyframes ringing {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.icon-box {
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.icon-box.ringing {
+  animation: ringing 0.6s ease-in-out;
+}
 
