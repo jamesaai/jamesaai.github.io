@@ -237,8 +237,3 @@ window.addEventListener('click', function (e) {
     modal.style.display = 'none';
   }
 });
-
-// Student Icon
-document.getElementById('student-card').addEventListener('click', function () {
-  this.classList.toggle('flipped');
-});
