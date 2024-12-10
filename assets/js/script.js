@@ -170,6 +170,20 @@ document.addEventListener("DOMContentLoaded", () => {
     { threshold: 0.1 }
   );
 
+// chatgpt 
+  document.getElementById('phone-icon').addEventListener('click', function () {
+  const iconBox = this;
+
+  // Add the ringing class
+  iconBox.classList.add('ringing');
+
+  // Remove the class after the animation ends
+  setTimeout(() => {
+    iconBox.classList.remove('ringing');
+  }, 600); // Match the duration of the animation
+});
+
+
   document.querySelectorAll(".timeline-item, .skills-item").forEach((item) => {
     observer.observe(item);
   });
