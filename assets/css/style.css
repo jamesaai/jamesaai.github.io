@@ -2043,4 +2043,15 @@ textarea.form-input::-webkit-resizer { display: none; }
   color: white;
   font-weight: bold;
 }
+/* thing */
+
+.form-feedback {
+  margin-top: 10px;
+  color: green;
+  font-size: 14px;
+}
+
+.form-feedback.error {
+  color: red;
+}
 
