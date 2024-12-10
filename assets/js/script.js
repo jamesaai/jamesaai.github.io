@@ -157,3 +157,20 @@ for (let i = 0; i < navigationLinks.length; i++) {
 
   });
 }
+// chatgpt 
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll(".timeline-item, .skills-item").forEach((item) => {
+    observer.observe(item);
+  });
+});
