@@ -188,3 +188,52 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(item);
   });
 });
+
+// Brithday
+document.getElementById('calendar-icon').addEventListener('click', function () {
+  const modal = document.getElementById('birthday-modal');
+  const calendarBody = modal.querySelector('.calendar-table tbody');
+
+  // Populate the calendar
+  const birthday = new Date('2009-12-23'); // Your birthday
+  const firstDay = new Date(birthday.getFullYear(), birthday.getMonth(), 1).getDay();
+  const daysInMonth = new Date(birthday.getFullYear(), birthday.getMonth() + 1, 0).getDate();
+
+  calendarBody.innerHTML = ''; // Clear previous content
+
+  let row = document.createElement('tr');
+  for (let i = 0; i < firstDay; i++) {
+    row.appendChild(document.createElement('td'));
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement('td');
+    cell.textContent = day;
+
+    if (day === birthday.getDate()) {
+      cell.classList.add('highlight'); // Highlight the birthday
+    }
+
+    row.appendChild(cell);
+
+    if ((firstDay + day) % 7 === 0 || day === daysInMonth) {
+      calendarBody.appendChild(row);
+      row = document.createElement('tr');
+    }
+  }
+
+  modal.style.display = 'flex';
+});
+
+// Close the modal
+document.querySelector('.close-btn').addEventListener('click', function () {
+  document.getElementById('birthday-modal').style.display = 'none';
+});
+
+// Close modal when clicking outside content
+window.addEventListener('click', function (e) {
+  const modal = document.getElementById('birthday-modal');
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
