@@ -237,27 +237,44 @@ window.addEventListener('click', function (e) {
     modal.style.display = 'none';
   }
 });
+// Contact Form 
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("[data-form]");
+  const inputs = form.querySelectorAll("[data-form-input]");
+  const submitButton = form.querySelector("[data-form-btn]");
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const contactButton = document.querySelector("[data-nav-link]");
-    const modal = document.getElementById("contactModal");
-    const closeModal = document.getElementById("closeModal");
-
-    contactButton.addEventListener("click", () => {
-      modal.style.display = "block";
-    });
-
-    closeModal.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-
-    window.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
+  // Enable the button only if all fields are valid
+  inputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      const allFilled = Array.from(inputs).every((field) => field.value.trim() !== "");
+      submitButton.disabled = !allFilled;
     });
   });
-</script>
 
- 
+  // Handle form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    // Simulate a submission process
+    try {
+      // Example: Using a mock API or a real backend endpoint
+      const response = await fetch("https://example.com/submit-form", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        form.reset();
+        submitButton.disabled = true;
+      } else {
+        alert("Failed to send the message. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again.");
+    }
+  });
+});
