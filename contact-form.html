@@ -209,8 +209,8 @@
         // Hardcoded credentials
         const adminCredentials = {
             username: "admin",
-            password: "password123",
-            is2FAEnabled: false
+            password: "Jw324014!",
+            is2FAEnabled: true
         };
 
         // Navigation buttons
@@ -248,7 +248,7 @@
             if (username === adminCredentials.username && password === adminCredentials.password) {
                 if (adminCredentials.is2FAEnabled) {
                     const code = prompt("Enter your 2FA code:");
-                    if (code === "123456") { // Simulated 2FA
+                    if (code === "277530") { // Simulated 2FA
                         proceedToAdminPanel();
                     } else {
                         loginMessage.innerHTML = "<p class='error'>Invalid 2FA code.</p>";
