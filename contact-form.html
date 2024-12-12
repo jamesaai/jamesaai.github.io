@@ -9,22 +9,33 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4);
+            animation: gradientBG 10s ease infinite;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            background: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         h2 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
 
         label {
@@ -39,28 +50,81 @@
         input[type="password"],
         textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 14px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         input[type="submit"],
         button {
-            background-color: #4CAF50;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
             color: white;
             padding: 12px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             cursor: pointer;
             width: 100%;
             font-size: 16px;
+            transition: background 0.3s ease;
         }
 
         input[type="submit"]:hover,
         button:hover {
-            background-color: #45a049;
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .navigation button {
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .navigation button:hover {
+            background: linear-gradient(45deg, #ee0979, #ff6a00);
+        }
+
+        .message {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .message button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .message button:hover {
+            background: #ff1744;
         }
 
         .error {
@@ -73,33 +137,14 @@
             font-size: 14px;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .messages {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-
-        .message {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-        }
-
-        .message:last-child {
-            border-bottom: none;
-        }
     </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <div class="container">
-        <button id="goToContact">Go to Contact Form</button>
-        <button id="goToMessages">Go to Message Sender</button>
+    <div class="container navigation">
+        <button id="goToContact">Contact Form</button>
+        <button id="goToMessages">Message Sender</button>
     </div>
 
     <!-- Login Form -->
@@ -164,7 +209,8 @@
         // Hardcoded credentials
         const adminCredentials = {
             username: "admin",
-            password: "password123"
+            password: "password123",
+            is2FAEnabled: false
         };
 
         // Navigation buttons
@@ -200,13 +246,26 @@
             const password = document.getElementById("password").value;
 
             if (username === adminCredentials.username && password === adminCredentials.password) {
-                loginContainer.classList.add("hidden");
-                adminContainer.classList.remove("hidden");
-                loadMessages();
+                if (adminCredentials.is2FAEnabled) {
+                    const code = prompt("Enter your 2FA code:");
+                    if (code === "123456") { // Simulated 2FA
+                        proceedToAdminPanel();
+                    } else {
+                        loginMessage.innerHTML = "<p class='error'>Invalid 2FA code.</p>";
+                    }
+                } else {
+                    proceedToAdminPanel();
+                }
             } else {
                 loginMessage.innerHTML = "<p class='error'>Invalid credentials. Please try again.</p>";
             }
         });
+
+        function proceedToAdminPanel() {
+            loginContainer.classList.add("hidden");
+            adminContainer.classList.remove("hidden");
+            loadMessages();
+        }
 
         // Contact form functionality
         const contactForm = document.getElementById("contactForm");
@@ -231,25 +290,6 @@
             }
         });
 
-        // Message sender functionality
-        const sendMessageForm = document.getElementById("sendMessageForm");
-        const sendMessageResponse = document.getElementById("sendMessageResponse");
-
-        sendMessageForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const sendToName = document.getElementById("sendToName").value.trim();
-            const sendMessage = document.getElementById("sendMessage").value.trim();
-
-            if (sendToName && sendMessage) {
-                alert(`Message sent to ${sendToName}: ${sendMessage}`);
-                sendMessageResponse.innerHTML = "<p class='success'>Message sent successfully!</p>";
-                sendMessageForm.reset();
-            } else {
-                sendMessageResponse.innerHTML = "<p class='error'>All fields are required.</p>";
-            }
-        });
-
         // Load messages in admin panel
         function loadMessages() {
             const messages = JSON.parse(localStorage.getItem("messages")) || [];
@@ -258,20 +298,40 @@
             if (messages.length === 0) {
                 messagesContainer.innerHTML = "<p>No messages yet.</p>";
             } else {
-                messagesContainer.innerHTML = messages.map(msg => `
+                messagesContainer.innerHTML = messages.map((msg, index) => `
                     <div class="message">
                         <p><strong>Name:</strong> ${msg.name}</p>
                         <p><strong>Email:</strong> ${msg.email}</p>
                         <p><strong>Message:</strong> ${msg.message}</p>
+                        <button onclick="deleteMessage(${index})">Delete</button>
                     </div>
                 `).join('');
             }
+        }
+
+        // Delete message functionality
+        function deleteMessage(index) {
+            const messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages.splice(index, 1);
+            localStorage.setItem("messages", JSON.stringify(messages));
+            loadMessages();
         }
 
         // Logout functionality
         document.getElementById("logoutButton").addEventListener("click", function() {
             adminContainer.classList.add("hidden");
             loginContainer.classList.remove("hidden");
+        });
+
+        // Toggle 2FA
+        const toggle2FAButton = document.createElement("button");
+        toggle2FAButton.textContent = "Toggle 2FA";
+        toggle2FAButton.style.marginTop = "10px";
+        adminContainer.appendChild(toggle2FAButton);
+
+        toggle2FAButton.addEventListener("click", function() {
+            adminCredentials.is2FAEnabled = !adminCredentials.is2FAEnabled;
+            alert(`2FA is now ${adminCredentials.is2FAEnabled ? 'enabled' : 'disabled'}.`);
         });
     </script>
 
