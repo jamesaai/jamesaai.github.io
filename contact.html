@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form</title>
+    <title>Contact Form with Admin Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,6 +36,7 @@
 
         input[type="text"],
         input[type="email"],
+        input[type="password"],
         textarea {
             width: 100%;
             padding: 10px;
@@ -45,7 +46,8 @@
             font-size: 14px;
         }
 
-        input[type="submit"] {
+        input[type="submit"],
+        button {
             background-color: #4CAF50;
             color: white;
             padding: 12px 20px;
@@ -56,7 +58,8 @@
             font-size: 16px;
         }
 
-        input[type="submit"]:hover {
+        input[type="submit"]:hover,
+        button:hover {
             background-color: #45a049;
         }
 
@@ -69,11 +72,47 @@
             color: green;
             font-size: 14px;
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .messages {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .message {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .message:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <!-- Login Form -->
+    <div class="container" id="loginContainer">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+            <input type="submit" value="Login">
+        </form>
+        <div id="loginMessage"></div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="container hidden" id="contactContainer">
         <h2>Contact Us</h2>
         <form id="contactForm">
             <label for="name">Full Name:</label>
@@ -90,46 +129,90 @@
         <div id="responseMessage"></div>
     </div>
 
+    <!-- Admin Panel -->
+    <div class="container hidden" id="adminContainer">
+        <h2>Admin Panel</h2>
+        <h3>Messages:</h3>
+        <div id="messages" class="messages">
+            <p>No messages yet.</p>
+        </div>
+        <button id="logoutButton">Logout</button>
+    </div>
+
     <script>
-        document.getElementById("contactForm").addEventListener("submit", function(event) {
+        // Hardcoded credentials
+        const adminCredentials = {
+            username: "admin",
+            password: "password123"
+        };
+
+        // Login functionality
+        const loginForm = document.getElementById("loginForm");
+        const loginContainer = document.getElementById("loginContainer");
+        const contactContainer = document.getElementById("contactContainer");
+        const adminContainer = document.getElementById("adminContainer");
+        const loginMessage = document.getElementById("loginMessage");
+
+        loginForm.addEventListener("submit", function(event) {
             event.preventDefault();
 
-            // Clear previous response message
-            document.getElementById("responseMessage").innerHTML = "";
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
 
-            // Get form values
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                loginContainer.classList.add("hidden");
+                adminContainer.classList.remove("hidden");
+                loadMessages();
+            } else {
+                loginMessage.innerHTML = "<p class='error'>Invalid credentials. Please try again.</p>";
+            }
+        });
+
+        // Contact form functionality
+        const contactForm = document.getElementById("contactForm");
+        const responseMessage = document.getElementById("responseMessage");
+
+        contactForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
             const name = document.getElementById("name").value.trim();
             const email = document.getElementById("email").value.trim();
             const message = document.getElementById("message").value.trim();
 
-            // Validate form fields
-            let errors = [];
+            if (name && email && message) {
+                const messages = JSON.parse(localStorage.getItem("messages")) || [];
+                messages.push({ name, email, message });
+                localStorage.setItem("messages", JSON.stringify(messages));
 
-            if (name === "") {
-                errors.push("Name is required.");
+                responseMessage.innerHTML = "<p class='success'>Your message has been sent successfully!</p>";
+                contactForm.reset();
+            } else {
+                responseMessage.innerHTML = "<p class='error'>All fields are required.</p>";
             }
+        });
 
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (email === "" || !emailPattern.test(email)) {
-                errors.push("Valid email is required.");
+        // Load messages in admin panel
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem("messages")) || [];
+            const messagesContainer = document.getElementById("messages");
+
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = "<p>No messages yet.</p>";
+            } else {
+                messagesContainer.innerHTML = messages.map(msg => `
+                    <div class="message">
+                        <p><strong>Name:</strong> ${msg.name}</p>
+                        <p><strong>Email:</strong> ${msg.email}</p>
+                        <p><strong>Message:</strong> ${msg.message}</p>
+                    </div>
+                `).join('');
             }
+        }
 
-            if (message === "") {
-                errors.push("Message is required.");
-            }
-
-            // If errors exist, display them
-            if (errors.length > 0) {
-                const errorHtml = errors.map(error => `<p class="error">${error}</p>`).join('');
-                document.getElementById("responseMessage").innerHTML = errorHtml;
-                return;
-            }
-
-            // If no errors, display success message (simulate form submission)
-            document.getElementById("responseMessage").innerHTML = "<p class='success'>Your message has been sent successfully!</p>";
-
-            // Optionally, you can clear the form after submission
-            document.getElementById("contactForm").reset();
+        // Logout functionality
+        document.getElementById("logoutButton").addEventListener("click", function() {
+            adminContainer.classList.add("hidden");
+            loginContainer.classList.remove("hidden");
         });
     </script>
 
