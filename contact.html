@@ -288,14 +288,14 @@
 
             if (parseInt(enteredOtp, 10) === otpSent) {
                 isLoggedIn = true;
-                alert('2FA Verified. Welcome, Admin!');
+                alert('2FA Verified. Welcome, James!');
                 otpSection.style.display = 'none';
                 loginModal.style.display = 'none';
                 overlay.style.display = 'none';
                 messageList.style.display = 'block';
                 loadMessages();
             } else {
-                alert('Invalid OTP. Please try again.');
+                alert('Invalid OTP code. Please try again.');
             }
         });
 
