@@ -101,6 +101,23 @@
         .message-item .delete-button:hover {
             background-color: #bd2130;
         }
+        .extra-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1em;
+        }
+        .extra-buttons button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .extra-buttons button:hover {
+            background-color: #5a6268;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +126,7 @@
         <button class="login-button">Login</button>
     </header>
     <main>
-        <h2>Contact Form</h2>
+        <h2>Contact Us</h2>
         <form id="contactForm">
             <div class="form-group">
                 <label for="name">Name</label>
@@ -127,6 +144,11 @@
                 <button type="submit">Send Message</button>
             </div>
         </form>
+
+        <div class="extra-buttons">
+            <button id="resetButton">Reset Form</button>
+            <button id="helpButton">Help</button>
+        </div>
 
         <div class="message-list" id="messageList">
             <h3>Messages</h3>
@@ -146,7 +168,6 @@
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
 
-            // Mock sending message
             const newMessage = document.createElement('div');
             newMessage.classList.add('message-item');
             newMessage.innerHTML = `
@@ -154,24 +175,19 @@
                 <button class="delete-button">Delete</button>
             `;
 
-            // Save message locally (simulate server-side storage)
             localStorage.setItem(`message_${Date.now()}`, JSON.stringify({ name, message }));
 
             alert('Message sent successfully!');
 
-            // Clear the form
             contactForm.reset();
         });
 
-        // Admin login simulation
         const loginButton = document.querySelector('.login-button');
         loginButton.addEventListener('click', () => {
             if (!isLoggedIn) {
-                const adminName = "James"; // Simulate admin name
+                const adminName = "James";
                 isLoggedIn = true;
                 alert(`Welcome ${adminName}`);
-
-                // Show messages upon login
                 messageList.style.display = 'block';
                 loadMessages();
             } else {
@@ -191,7 +207,6 @@
                         <button class="delete-button">Delete</button>
                     `;
 
-                    // Handle Delete Button
                     messageItem.querySelector('.delete-button').addEventListener('click', () => {
                         localStorage.removeItem(key);
                         messageItem.remove();
@@ -201,6 +216,15 @@
                 }
             }
         }
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            contactForm.reset();
+            alert('Form reset!');
+        });
+
+        document.getElementById('helpButton').addEventListener('click', () => {
+            alert('Fill in your details and click "Send Message" to contact us.');
+        });
     </script>
 </body>
 </html>
