@@ -8,10 +8,10 @@
         // Function to check password
         function checkPassword() {
             var password = prompt("Please enter the password to access the page:");
-            if (password === "gamesisfun") {
+            if (password === "fun") {
                 document.getElementById("content").style.display = "block"; // Show the content if correct password
             } else {
-                alert("Incorrect password. You cannot access the games.");
+                alert("Wrong password. You cannot access the games.");
                 window.location.href = "about:blank"; // Redirect if password is incorrect
             }
         }
