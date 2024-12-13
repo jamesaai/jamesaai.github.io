@@ -40,6 +40,53 @@
         header .login-button:hover {
             background-color: #0056b3;
         }
+        #loginModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: black;
+            z-index: 1000;
+        }
+        #loginModal h2 {
+            margin-top: 0;
+        }
+        #loginModal .form-group {
+            margin-bottom: 1em;
+        }
+        #loginModal .form-group input {
+            width: 100%;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #loginModal .form-group button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        #loginModal .form-group button:hover {
+            background-color: #218838;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
         main {
             max-width: 800px;
             margin: 2em auto;
@@ -121,6 +168,24 @@
     </style>
 </head>
 <body>
+    <div id="overlay"></div>
+    <div id="loginModal">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+
     <header>
         <h1>Contact Form</h1>
         <button class="login-button">Login</button>
@@ -159,7 +224,39 @@
     <script>
         const contactForm = document.getElementById('contactForm');
         const messageList = document.getElementById('messageList');
+        const loginButton = document.querySelector('.login-button');
+        const loginModal = document.getElementById('loginModal');
+        const overlay = document.getElementById('overlay');
+        const loginForm = document.getElementById('loginForm');
         let isLoggedIn = false;
+
+        loginButton.addEventListener('click', () => {
+            overlay.style.display = 'block';
+            loginModal.style.display = 'block';
+        });
+
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            loginModal.style.display = 'none';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'admin' && password === 'password123') {
+                isLoggedIn = true;
+                alert(`Welcome, Admin!`);
+                loginModal.style.display = 'none';
+                overlay.style.display = 'none';
+                messageList.style.display = 'block';
+                loadMessages();
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
 
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -182,49 +279,7 @@
             contactForm.reset();
         });
 
-        const loginButton = document.querySelector('.login-button');
-        loginButton.addEventListener('click', () => {
-            if (!isLoggedIn) {
-                const adminName = "James";
-                isLoggedIn = true;
-                alert(`Welcome ${adminName}`);
-                messageList.style.display = 'block';
-                loadMessages();
-            } else {
-                alert('You are already logged in!');
-            }
-        });
-
         function loadMessages() {
             messageList.innerHTML = '<h3>Messages</h3>';
             for (let key in localStorage) {
-                if (key.startsWith('message_')) {
-                    const { name, message } = JSON.parse(localStorage.getItem(key));
-                    const messageItem = document.createElement('div');
-                    messageItem.classList.add('message-item');
-                    messageItem.innerHTML = `
-                        <span><strong>${name}:</strong> ${message}</span>
-                        <button class="delete-button">Delete</button>
-                    `;
-
-                    messageItem.querySelector('.delete-button').addEventListener('click', () => {
-                        localStorage.removeItem(key);
-                        messageItem.remove();
-                    });
-
-                    messageList.appendChild(messageItem);
-                }
-            }
-        }
-
-        document.getElementById('resetButton').addEventListener('click', () => {
-            contactForm.reset();
-            alert('Form reset!');
-        });
-
-        document.getElementById('helpButton').addEventListener('click', () => {
-            alert('Fill in your details and click "Send Message" to contact us.');
-        });
-    </script>
-</body>
-</html>
+                if (
