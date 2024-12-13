@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myapps Classlink</title>
+    <title>MyApps ClassLink</title>
+    <script>
+        // Function to check password
+        function checkPassword() {
+            var password = prompt("Please enter the password to access the page:");
+            if (password === "gamesisfun") {
+                document.getElementById("content").style.display = "block"; // Show the content if correct password
+            } else {
+                alert("Incorrect password. You cannot access the games.");
+                window.location.href = "about:blank"; // Redirect if password is incorrect
+            }
+        }
+    </script>
 </head>
-<body>
+<body onload="checkPassword()">
+    <div id="content" style="display:none;">
     <h1>Play Survival Karts</h1>
     <iframe src="https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index-og.html" 
             width="800" 
