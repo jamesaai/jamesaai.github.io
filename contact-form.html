@@ -72,6 +72,7 @@
         }
         .message-list {
             margin-top: 2em;
+            display: none;
         }
         .message-item {
             display: flex;
@@ -131,6 +132,7 @@
     <script>
         const contactForm = document.getElementById('contactForm');
         const messageList = document.getElementById('messageList');
+        let isLoggedIn = false;
 
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -146,26 +148,54 @@
                 <span><strong>${name}:</strong> ${message}</span>
                 <button class="delete-button">Delete</button>
             `;
-            messageList.appendChild(newMessage);
+
+            // Save message locally (simulate server-side storage)
+            localStorage.setItem(`message_${Date.now()}`, JSON.stringify({ name, message }));
+
+            alert('Message sent successfully!');
 
             // Clear the form
             contactForm.reset();
-
-            // Notify (mock notification)
-            alert('Message sent successfully!');
-
-            // Handle Delete Button
-            newMessage.querySelector('.delete-button').addEventListener('click', () => {
-                newMessage.remove();
-            });
         });
 
         // Admin login simulation
         const loginButton = document.querySelector('.login-button');
         loginButton.addEventListener('click', () => {
-            const adminName = "James"; // Simulate admin name
-            alert(`Welcome ${adminName}`);
+            if (!isLoggedIn) {
+                const adminName = "James"; // Simulate admin name
+                isLoggedIn = true;
+                alert(`Welcome ${adminName}`);
+
+                // Show messages upon login
+                messageList.style.display = 'block';
+                loadMessages();
+            } else {
+                alert('You are already logged in!');
+            }
         });
+
+        function loadMessages() {
+            messageList.innerHTML = '<h3>Messages</h3>';
+            for (let key in localStorage) {
+                if (key.startsWith('message_')) {
+                    const { name, message } = JSON.parse(localStorage.getItem(key));
+                    const messageItem = document.createElement('div');
+                    messageItem.classList.add('message-item');
+                    messageItem.innerHTML = `
+                        <span><strong>${name}:</strong> ${message}</span>
+                        <button class="delete-button">Delete</button>
+                    `;
+
+                    // Handle Delete Button
+                    messageItem.querySelector('.delete-button').addEventListener('click', () => {
+                        localStorage.removeItem(key);
+                        messageItem.remove();
+                    });
+
+                    messageList.appendChild(messageItem);
+                }
+            }
+        }
     </script>
 </body>
 </html>
