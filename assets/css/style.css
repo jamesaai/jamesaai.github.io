@@ -67,9 +67,23 @@
   --onyx: hsl(240, 1%, 17%);
   --eerie-black-1: hsl(0, 100%, 0%);
   --eerie-black-2: hsl(0, 100%, 0%);
-  body {
-  background: linear-gradient(to bottom right, hsl(12, 100%, 50%), hsl(313, 100%, 50%));
+  @keyframes gradientAnimation {
+  0% {
+    background: linear-gradient(to bottom right, hsl(12, 100%, 50%), hsl(313, 100%, 50%));
+  }
+  50% {
+    background: linear-gradient(to bottom right, hsl(240, 100%, 50%), hsl(360, 100%, 50%)); /* Example of blue to red */
+  }
+  100% {
+    background: linear-gradient(to bottom right, hsl(12, 100%, 50%), hsl(313, 100%, 50%));
+  }
 }
+
+body {
+  animation: gradientAnimation 10s infinite ease-in-out;
+  background: linear-gradient(to bottom right, hsl(12, 100%, 50%), hsl(313, 100%, 50%)); /* Initial gradient */
+}
+
 
   --white-1: hsl(0, 0%, 100%);
   --white-2: hsl(0, 0%, 98%);
