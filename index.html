@@ -215,10 +215,12 @@
       // Open the monitor in a new tab
       window.open("https://stats.uptimerobot.com/6Uo0TcnZbQ", "_blank");
     } else {
-      alert("Incorrect password. Access denied.");
+      // Redirect to the specified URL if the password is incorrect
+      window.location.href = "https://jamesaai.netlify.app/index";
     }
   }
 </script>
+
 
 
 
