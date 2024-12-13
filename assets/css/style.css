@@ -65,8 +65,8 @@
 
   --jet: hsl(0, 0%, 22%);
   --onyx: hsl(240, 1%, 17%);
-  --eerie-black-1: hsl(194, 55%, 0%);
-  --eerie-black-2: hsl(194, 55%, 0%);
+  --eerie-black-1: hsl(0, 100%, 0%);
+  --eerie-black-2: hsl(0, 100%, 0%);
   --smoky-black: hsl(194, 55%, 55%);
   --white-1: hsl(0, 0%, 100%);
   --white-2: hsl(0, 0%, 98%);
