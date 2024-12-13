@@ -64,6 +64,11 @@
             cursor: pointer;
             background-color: #e0e0e0;
         }
+        #carGameCanvas {
+            border: 2px solid #333;
+            background-color: #e0e0e0;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +83,7 @@
         <button class="game-button" onclick="startNumberGuessingGame()">Number Guessing Game</button>
         <button class="game-button" onclick="startRockPaperScissors()">Rock, Paper, Scissors</button>
         <button class="game-button" onclick="startTicTacToe()">Tic-Tac-Toe</button>
+        <button class="game-button" onclick="startCarRacingGame()">Car Racing Game</button>
     </div>
 
     <!-- Number Guessing Game -->
@@ -104,9 +110,17 @@
     <!-- Tic-Tac-Toe Game -->
     <div id="ticTacToeGame" class="game-container" style="display: none;">
         <h2>Tic-Tac-Toe</h2>
-        <p>Player 1 (X) vs Player 2 (O)</p>
+        <p>Choose mode: <button onclick="start2PlayerTicTacToe()">2 Players</button> | <button onclick="startComputerTicTacToe()">Play Against Computer</button></p>
         <div class="tic-tac-toe-board" id="ticTacToeBoard"></div>
         <p id="ticTacToeResult"></p>
+        <button onclick="resetGame()">Back to Main Menu</button>
+    </div>
+
+    <!-- Car Racing Game -->
+    <div id="carRacingGame" class="game-container" style="display: none;">
+        <h2>Car Racing Game</h2>
+        <p>Use arrow keys to avoid obstacles!</p>
+        <canvas id="carGameCanvas" width="400" height="600"></canvas>
         <button onclick="resetGame()">Back to Main Menu</button>
     </div>
 
@@ -123,6 +137,7 @@
             document.getElementById("numberGuessingGame").style.display = "block";
             document.getElementById("rockPaperScissorsGame").style.display = "none";
             document.getElementById("ticTacToeGame").style.display = "none";
+            document.getElementById("carRacingGame").style.display = "none";
             targetNumber = Math.floor(Math.random() * 100) + 1;
         }
 
@@ -147,6 +162,7 @@
             document.getElementById("numberGuessingGame").style.display = "none";
             document.getElementById("rockPaperScissorsGame").style.display = "block";
             document.getElementById("ticTacToeGame").style.display = "none";
+            document.getElementById("carRacingGame").style.display = "none";
             document.getElementById("rpsResult").innerText = '';
         }
 
@@ -170,12 +186,27 @@
         // Tic-Tac-Toe
         let board = ['', '', '', '', '', '', '', '', ''];
         let currentPlayer = 'X';
+        let isComputerPlaying = false;
 
-        function startTicTacToe() {
+        function start2PlayerTicTacToe() {
             document.getElementById("numberGuessingGame").style.display = "none";
             document.getElementById("rockPaperScissorsGame").style.display = "none";
             document.getElementById("ticTacToeGame").style.display = "block";
+            document.getElementById("carRacingGame").style.display = "none";
             document.getElementById("ticTacToeResult").innerText = '';
+            isComputerPlaying = false;
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            renderBoard();
+        }
+
+        function startComputerTicTacToe() {
+            document.getElementById("numberGuessingGame").style.display = "none";
+            document.getElementById("rockPaperScissorsGame").style.display = "none";
+            document.getElementById("ticTacToeGame").style.display = "block";
+            document.getElementById("carRacingGame").style.display = "none";
+            document.getElementById("ticTacToeResult").innerText = '';
+            isComputerPlaying = true;
             board = ['', '', '', '', '', '', '', '', ''];
             currentPlayer = 'X';
             renderBoard();
@@ -202,6 +233,9 @@
                 document.getElementById("ticTacToeResult").innerText = "It's a tie!";
             } else {
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                if (isComputerPlaying && currentPlayer === 'O') {
+                    setTimeout(computerMove, 500);
+                }
             }
             renderBoard();
         }
@@ -226,11 +260,111 @@
             return false;
         }
 
+        function computerMove() {
+            const emptyCells = board.map((value, index) => value === '' ? index : null).filter(val => val !== null);
+            const randomMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            board[randomMove] = 'O';
+            if (checkWinner()) {
+                document.getElementById("ticTacToeResult").innerText = 'Computer wins!';
+            } else if (board.every(cell => cell !== '')) {
+                document.getElementById("ticTacToeResult").innerText = "It's a tie!";
+            } else {
+                currentPlayer = 'X';
+            }
+            renderBoard();
+        }
+
+        // Car Racing Game
+        let carX = 180;
+        let carY = 500;
+        let obstacles = [];
+        let gameInterval;
+        let isGameOver = false;
+
+        function startCarRacingGame() {
+            document.getElementById("numberGuessingGame").style.display = "none";
+            document.getElementById("rockPaperScissorsGame").style.display = "none";
+            document.getElementById("ticTacToeGame").style.display = "none";
+            document.getElementById("carRacingGame").style.display = "block";
+
+            carX = 180;
+            carY = 500;
+            obstacles = [];
+            isGameOver = false;
+
+            const canvas = document.getElementById("carGameCanvas");
+            const ctx = canvas.getContext("2d");
+
+            document.addEventListener("keydown", moveCar);
+
+            gameInterval = setInterval(() => {
+                if (isGameOver) {
+                    clearInterval(gameInterval);
+                    alert("Game Over! Refresh the page to play again.");
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawCar();
+                generateObstacles();
+                moveObstacles();
+                checkCollisions();
+            }, 20);
+        }
+
+        function moveCar(event) {
+            if (event.key === "ArrowLeft" && carX > 0) {
+                carX -= 10;
+            } else if (event.key === "ArrowRight" && carX < 340) {
+                carX += 10;
+            }
+        }
+
+        function drawCar() {
+            const canvas = document.getElementById("carGameCanvas");
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(carX, carY, 40, 60);
+        }
+
+        function generateObstacles() {
+            if (Math.random() < 0.02) {
+                obstacles.push({ x: Math.random() * 360, y: 0 });
+            }
+        }
+
+        function moveObstacles() {
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].y += 5;
+                if (obstacles[i].y > 600) {
+                    obstacles.splice(i, 1);
+                }
+            }
+        }
+
+        function checkCollisions() {
+            const canvas = document.getElementById("carGameCanvas");
+            const ctx = canvas.getContext("2d");
+            for (let i = 0; i < obstacles.length; i++) {
+                ctx.fillStyle = "#00FF00";
+                ctx.fillRect(obstacles[i].x, obstacles[i].y, 40, 60);
+                if (
+                    carX < obstacles[i].x + 40 &&
+                    carX + 40 > obstacles[i].x &&
+                    carY < obstacles[i].y + 60 &&
+                    carY + 60 > obstacles[i].y
+                ) {
+                    isGameOver = true;
+                }
+            }
+        }
+
         // Reset Game
         function resetGame() {
             document.getElementById("numberGuessingGame").style.display = "none";
             document.getElementById("rockPaperScissorsGame").style.display = "none";
             document.getElementById("ticTacToeGame").style.display = "none";
+            document.getElementById("carRacingGame").style.display = "none";
         }
     </script>
 
