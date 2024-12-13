@@ -67,7 +67,7 @@
   --onyx: hsl(240, 1%, 17%);
   --eerie-black-1: hsl(0, 100%, 0%);
   --eerie-black-2: hsl(0, 100%, 0%);
-  --smoky-black: hsl(194, 55%, 55%);
+  --smoky-black: HSL(2°, 0%, 0%)
   --white-1: hsl(0, 0%, 100%);
   --white-2: hsl(0, 0%, 98%);
   --orange-yellow-crayola: hsl(45, 100%, 72%);
