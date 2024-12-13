@@ -77,6 +77,12 @@
         #loginModal .form-group button:hover {
             background-color: #218838;
         }
+        #otpSection {
+            display: none;
+        }
+        #otpSection h2 {
+            margin-top: 0;
+        }
         #overlay {
             display: none;
             position: fixed;
@@ -184,6 +190,18 @@
                 <button type="submit">Login</button>
             </div>
         </form>
+        <div id="otpSection">
+            <h2>Enter OTP</h2>
+            <form id="otpForm">
+                <div class="form-group">
+                    <label for="otp">OTP</label>
+                    <input type="text" id="otp" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Verify OTP</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <header>
@@ -228,7 +246,14 @@
         const loginModal = document.getElementById('loginModal');
         const overlay = document.getElementById('overlay');
         const loginForm = document.getElementById('loginForm');
+        const otpForm = document.getElementById('otpForm');
+        const otpSection = document.getElementById('otpSection');
         let isLoggedIn = false;
+        let otpSent = null;
+
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000); // 6-digit random OTP
+        }
 
         loginButton.addEventListener('click', () => {
             overlay.style.display = 'block';
@@ -238,6 +263,7 @@
         overlay.addEventListener('click', () => {
             overlay.style.display = 'none';
             loginModal.style.display = 'none';
+            otpSection.style.display = 'none';
         });
 
         loginForm.addEventListener('submit', (e) => {
@@ -247,14 +273,29 @@
             const password = document.getElementById('password').value;
 
             if (username === 'admin' && password === 'password123') {
+                otpSent = generateOTP();
+                alert(`OTP sent: ${otpSent}`); // Replace with email integration
+                loginForm.style.display = 'none';
+                otpSection.style.display = 'block';
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+
+        otpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const enteredOtp = document.getElementById('otp').value;
+
+            if (parseInt(enteredOtp, 10) === otpSent) {
                 isLoggedIn = true;
-                alert(`Welcome, Admin!`);
+                alert('2FA Verified. Welcome, Admin!');
+                otpSection.style.display = 'none';
                 loginModal.style.display = 'none';
                 overlay.style.display = 'none';
                 messageList.style.display = 'block';
                 loadMessages();
             } else {
-                alert('Invalid username or password.');
+                alert('Invalid OTP. Please try again.');
             }
         });
 
@@ -282,4 +323,23 @@
         function loadMessages() {
             messageList.innerHTML = '<h3>Messages</h3>';
             for (let key in localStorage) {
-                if (
+                if (key.startsWith('message_')) {
+                    const { name, message } = JSON.parse(localStorage.getItem(key));
+                    const messageItem = document.createElement('div');
+                    messageItem.classList.add('message-item');
+                    messageItem.innerHTML = `
+                        <span><strong>${name}:</strong> ${message}</span>
+                        <button class="delete-button" onclick="deleteMessage('${key}')">Delete</button>
+                    `;
+                    messageList.appendChild(messageItem);
+                }
+            }
+        }
+
+        function deleteMessage(key) {
+            localStorage.removeItem(key);
+            loadMessages();
+        }
+    </script>
+</body>
+</html>
