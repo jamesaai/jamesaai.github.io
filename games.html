@@ -16,14 +16,28 @@
             text-align: center;
             margin-top: 20px;
         }
-        iframe {
+        .game-button {
             display: block;
+            width: 200px;
+            margin: 10px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+        .game-button:hover {
+            background-color: #45a049;
+        }
+        .game-container {
+            display: none;
+            text-align: center;
+        }
+        iframe {
             margin: 20px auto;
             border: none;
-        }
-        hr {
-            margin: 40px 0;
-            border: 1px solid #ccc;
         }
     </style>
     <script>
@@ -37,79 +51,49 @@
                 window.location.href = "about:blank"; // Redirect if password is incorrect
             }
         }
+
+        // Function to load the selected game
+        function loadGame(gameUrl, gameName) {
+            // Hide any previous game iframe
+            var gameContainer = document.getElementById("game-container");
+            gameContainer.style.display = "block"; // Show the container
+
+            // Create a new iframe element
+            var iframe = document.createElement("iframe");
+            iframe.src = gameUrl;
+            iframe.width = "800";
+            iframe.height = "600";
+            
+            // Clear previous iframe content
+            gameContainer.innerHTML = "";
+            
+            // Append the new iframe
+            gameContainer.appendChild(iframe);
+
+            // Update the title to reflect the selected game
+            document.getElementById("game-title").innerText = "Playing: " + gameName;
+        }
     </script>
 </head>
 <body onload="checkPassword()">
     <div id="content" style="display:none;">
-        <h1>Play Survival Karts</h1>
-        <iframe src="https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index-og.html" 
-                width="800" 
-                height="600">
-        </iframe>
+        <h1>Choose a Game to Play</h1>
 
-        <hr>
-        
-        <h1>Play Block Blast</h1>
-        <iframe src="https://cloud.onlinegames.io/games/2024/unity3/block-blast/index-og.html" 
-                width="800" 
-                height="600">
-        </iframe>
+        <!-- Game buttons -->
+        <button class="game-button" onclick="loadGame('https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index-og.html', 'Survival Karts')">Play Survival Karts</button>
+        <button class="game-button" onclick="loadGame('https://cloud.onlinegames.io/games/2024/unity3/block-blast/index-og.html', 'Block Blast')">Play Block Blast</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2023/unity/madalin-stunt-cars-pro/index.html', 'Madalin Stunt Cars Pro')">Play Madalin Stunt Cars Pro</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2024/unity/drift-king/index.html', 'Drift King')">Play Drift King</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html', 'Highway Traffic')">Play Highway Traffic</button>
+        <button class="game-button" onclick="loadGame('https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index-og.html', 'Stickman Parkour')">Play Stickman Parkour</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html', 'GTA Simulator')">Play GTA Simulator</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2021/3/love-tester/index.html', 'Love Tester')">Play Love Tester</button>
+        <button class="game-button" onclick="loadGame('https://www.onlinegames.io/games/2023/unity/real-flight-simulator/index.html', 'Real Flight Simulator')">Play Real Flight Simulator</button>
 
-        <hr> 
-        
-        <h1>Play Madalin Stunt Cars Pro</h1>
-        <iframe src="https://www.onlinegames.io/games/2023/unity/madalin-stunt-cars-pro/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play Drift King</h1>
-        <iframe src="https://www.onlinegames.io/games/2024/unity/drift-king/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play Highway Traffic</h1>
-        <iframe src="https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play Stickman Parkour</h1>
-        <iframe src="https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index-og.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play GTA Simulator</h1>
-        <iframe src="https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play Love Tester</h1>
-        <iframe src="https://www.onlinegames.io/games/2021/3/love-tester/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
-
-        <hr>
-
-        <h1>Play Real Flight Simulator</h1>
-        <iframe src="https://www.onlinegames.io/games/2023/unity/real-flight-simulator/index.html" 
-                width="800" 
-                height="600">
-        </iframe>
+        <!-- Game container where the iframe will appear -->
+        <div id="game-container" class="game-container">
+            <h1 id="game-title">Select a Game to Start</h1>
+        </div>
     </div>
 </body>
 </html>
