@@ -72,9 +72,10 @@
 
 <div class="container" id="login-container">
     <h2>Login</h2>
-    <input type="text" id="username" placeholder="Enter Username">
+    <input type="text" id="email" placeholder="Enter Email">
     <input type="password" id="password" placeholder="Enter Password">
     <button onclick="login()">Login</button>
+    <div id="error-message" style="color: red; text-align: center; display: none;"></div>
 </div>
 
 <div class="container" id="chat-container" style="display:none;">
@@ -93,7 +94,7 @@
 <script>
     // Firebase configuration
     const firebaseConfig = {
-        apiKey: "AIzaSyDTPt40Ot4iIYqkzvGBqvqfd-FAAp7JllE",
+         apiKey: "AIzaSyDTPt40Ot4iIYqkzvGBqvqfd-FAAp7JllE",
   authDomain: "james-d96f5.firebaseapp.com",
   projectId: "james-d96f5",
   storageBucket: "james-d96f5.firebasestorage.app",
@@ -110,10 +111,15 @@
 
     // Function to log in
     function login() {
-        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        auth.signInWithEmailAndPassword(username, password)
+        if (email === "" || password === "") {
+            displayError("Please fill in both fields.");
+            return;
+        }
+
+        auth.signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 currentUser = userCredential.user;
                 document.getElementById('login-container').style.display = 'none';
@@ -123,8 +129,15 @@
                 loadMessages();
             })
             .catch((error) => {
-                alert(error.message);
+                displayError(error.message);
             });
+    }
+
+    // Function to display login error messages
+    function displayError(message) {
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.style.display = 'block';
+        errorMessageElement.textContent = message;
     }
 
     // Function to send a message
@@ -162,6 +175,7 @@
             currentUser = null;
             document.getElementById('login-container').style.display = 'block';
             document.getElementById('chat-container').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';  // Hide error message on logout
         });
     }
 
