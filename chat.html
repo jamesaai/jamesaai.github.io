@@ -1,3 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Messaging Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .message-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .sent {
+            background-color: #d3f8e2;
+            text-align: left;
+        }
+        .received {
+            background-color: #f1f1f1;
+            text-align: right;
+        }
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="login-container">
+    <h2>Login</h2>
+    <input type="text" id="email" placeholder="Enter Email">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="login()">Login</button>
+    <div id="error-message" style="color: red; text-align: center; display: none;"></div>
+</div>
+
+<div class="container" id="chat-container" style="display:none;">
+    <h2>Chat Room</h2>
+    <select id="recipient">
+        <!-- Users will be populated here -->
+    </select>
+    <div class="message-container" id="message-container"></div>
+    <input type="text" id="message" placeholder="Type a message" disabled>
+    <button onclick="sendMessage()" disabled>Send</button>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+
 <script>
     // Firebase configuration
     const firebaseConfig = {
@@ -33,7 +129,7 @@
                 document.getElementById('chat-container').style.display = 'block';
                 document.getElementById('message').disabled = false;
                 document.querySelector('button').disabled = false;
-                loadMessages();
+                loadUsers();
             })
             .catch((error) => {
                 displayError(error.message);
@@ -47,12 +143,33 @@
         errorMessageElement.textContent = message;
     }
 
+    // Load all users for chatting
+    function loadUsers() {
+        db.collection('users').get().then((snapshot) => {
+            const recipientSelect = document.getElementById('recipient');
+            recipientSelect.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const user = doc.data();
+                if (user.email !== currentUser.email) {
+                    const option = document.createElement('option');
+                    option.value = user.email;
+                    option.textContent = user.email;
+                    recipientSelect.appendChild(option);
+                }
+            });
+            loadMessages();
+        });
+    }
+
     // Function to send a message
     function sendMessage() {
         const message = document.getElementById('message').value;
-        if (message) {
+        const recipient = document.getElementById('recipient').value;
+
+        if (message && recipient) {
             db.collection('messages').add({
-                username: currentUser.email,
+                sender: currentUser.email,
+                recipient: recipient,
                 message: message,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -62,18 +179,26 @@
 
     // Function to load messages
     function loadMessages() {
-        db.collection('messages').orderBy('timestamp').onSnapshot((snapshot) => {
-            const messageContainer = document.getElementById('message-container');
-            messageContainer.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const messageData = doc.data();
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                messageElement.classList.add(messageData.username === currentUser.email ? 'sent' : 'received');
-                messageElement.textContent = `${messageData.username}: ${messageData.message}`;
-                messageContainer.appendChild(messageElement);
-            });
-        });
+        const recipient = document.getElementById('recipient').value;
+
+        if (recipient) {
+            db.collection('messages')
+                .where('sender', 'in', [currentUser.email, recipient])
+                .where('recipient', 'in', [currentUser.email, recipient])
+                .orderBy('timestamp')
+                .onSnapshot((snapshot) => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = '';
+                    snapshot.forEach((doc) => {
+                        const messageData = doc.data();
+                        const messageElement = document.createElement('div');
+                        messageElement.classList.add('message');
+                        messageElement.classList.add(messageData.sender === currentUser.email ? 'sent' : 'received');
+                        messageElement.textContent = `${messageData.sender}: ${messageData.message}`;
+                        messageContainer.appendChild(messageElement);
+                    });
+                });
+        }
     }
 
     // Function to log out
@@ -94,7 +219,7 @@
             document.getElementById('chat-container').style.display = 'block';
             document.getElementById('message').disabled = false;
             document.querySelector('button').disabled = false;
-            loadMessages();
+            loadUsers();
         } else {
             currentUser = null;
             document.getElementById('login-container').style.display = 'block';
@@ -102,3 +227,6 @@
         }
     });
 </script>
+
+</body>
+</html>
