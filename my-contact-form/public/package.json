@@ -1,1 +1,12 @@
-
+{
+  "name": "my-contact-form",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "serve public",
+    "build": "next build", // if you plan to use Next.js later
+    "start": "next start"  // if you plan to use Next.js later
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
