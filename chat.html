@@ -6,10 +6,9 @@
     <title>Real-Time Chat</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,47 +16,67 @@
         }
         #chat-container {
             width: 100%;
-            max-width: 500px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            max-width: 400px;
+            height: 600px;
+            background-color: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         #messages {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            background-color: #eaeaea;
         }
         .message {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            max-width: 75%;
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
         }
-        .message span {
-            font-weight: bold;
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+        .message.received {
+            background-color: #f1f1f1;
+            color: black;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
         }
         #input-container {
             display: flex;
             padding: 10px;
-            background: #f9f9f9;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
         }
-        #input-container input {
+        #message-input {
             flex: 1;
             padding: 10px;
+            font-size: 14px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 20px;
+            outline: none;
         }
-        #input-container button {
+        #send-button {
             margin-left: 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 50%;
             cursor: pointer;
+            font-size: 16px;
         }
-        #input-container button:hover {
+        #send-button:hover {
             background-color: #0056b3;
         }
     </style>
@@ -67,42 +86,73 @@
         <div id="messages"></div>
         <div id="input-container">
             <input type="text" id="message-input" placeholder="Type a message...">
-            <button id="send-button">Send</button>
+            <button id="send-button">➤</button>
         </div>
     </div>
 
-    <script>
-        const socket = io("http://localhost:3000"); // Connect to the server
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
 
-        const messages = document.getElementById("messages");
+    <script>
+        // Your Firebase project configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // DOM Elements
+        const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("message-input");
         const sendButton = document.getElementById("send-button");
 
-        // Handle incoming messages
-        socket.on("message", (data) => {
+        // Generate a random username for simplicity
+        const username = "User" + Math.floor(Math.random() * 1000);
+
+        // Listen for new messages
+        db.ref("messages").on("child_added", (snapshot) => {
+            const data = snapshot.val();
             const messageElement = document.createElement("div");
             messageElement.classList.add("message");
-            messageElement.innerHTML = `<span>${data.user}:</span> ${data.message}`;
-            messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight; // Auto-scroll to the bottom
-        });
 
-        // Send message
-        sendButton.addEventListener("click", () => {
-            const message = messageInput.value;
-            if (message.trim()) {
-                socket.emit("message", { user: "User", message });
-                messageInput.value = "";
+            if (data.user === username) {
+                messageElement.classList.add("sent");
+            } else {
+                messageElement.classList.add("received");
             }
+
+            messageElement.innerHTML = `<strong>${data.user}:</strong> ${data.message}`;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Auto-scroll to the bottom
         });
 
+        // Send a message
+        sendButton.addEventListener("click", sendMessage);
         messageInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                sendButton.click();
+                sendMessage();
             }
         });
-    </script>
 
-    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                db.ref("messages").push({
+                    user: username,
+                    message: message
+                });
+                messageInput.value = "";
+            }
+        }
+    </script>
 </body>
 </html>
