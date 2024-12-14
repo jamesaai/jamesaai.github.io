@@ -10,3 +10,15 @@
     "serve": "^14.0.1"
   }
 }
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "serve public",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
