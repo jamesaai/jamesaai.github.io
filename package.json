@@ -1,0 +1,12 @@
+{
+  "name": "my-contact-form",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "serve public",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
