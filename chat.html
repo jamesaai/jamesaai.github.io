@@ -1,107 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Messaging Service</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-        .container {
-            width: 400px;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .message-container {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-        .message {
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .sent {
-            background-color: #d3f8e2;
-            text-align: left;
-        }
-        .received {
-            background-color: #f1f1f1;
-            text-align: right;
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:disabled {
-            background-color: #ccc;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container" id="login-container">
-    <h2>Login</h2>
-    <input type="text" id="email" placeholder="Enter Email">
-    <input type="password" id="password" placeholder="Enter Password">
-    <button onclick="login()">Login</button>
-    <div id="error-message" style="color: red; text-align: center; display: none;"></div>
-</div>
-
-<div class="container" id="chat-container" style="display:none;">
-    <h2>Chat Room</h2>
-    <div class="message-container" id="message-container"></div>
-    <input type="text" id="message" placeholder="Type a message" disabled>
-    <button onclick="sendMessage()" disabled>Send</button>
-    <button onclick="logout()">Logout</button>
-</div>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
-
 <script>
     // Firebase configuration
     const firebaseConfig = {
-         apiKey: "AIzaSyDTPt40Ot4iIYqkzvGBqvqfd-FAAp7JllE",
-  authDomain: "james-d96f5.firebaseapp.com",
-  projectId: "james-d96f5",
-  storageBucket: "james-d96f5.firebasestorage.app",
-  messagingSenderId: "516830675532",
-  appId: "1:516830675532:web:17c66e91a7ffc7a06feae9",
+        apiKey: "AIzaSyDTPt40Ot4iIYqkzvGBqvqfd-FAAp7JllE",
+        authDomain: "james-d96f5.firebaseapp.com",
+        projectId: "james-d96f5",
+        storageBucket: "james-d96f5.firebasestorage.app",
+        messagingSenderId: "516830675532",
+        appId: "1:516830675532:web:17c66e91a7ffc7a06feae9"
     };
-    
+
     // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -195,6 +102,3 @@
         }
     });
 </script>
-
-</body>
-</html>
