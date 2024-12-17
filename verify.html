@@ -68,7 +68,7 @@
             return Math.floor(100000 + Math.random() * 900000);  // Generates a 6-digit code
         }
 
-        // Generate a random 2FA code
+        // Store the generated 2FA code in a variable
         var twoFACode = generateRandom2FACode();
 
         // Function to handle the student ID verification
@@ -89,7 +89,7 @@
         function verify2FACode() {
             var user2FACode = document.getElementById("2faCode").value;
 
-            if (user2FACode === twoFACode) {
+            if (user2FACode === twoFACode.toString()) { // Compare the input code with the 2FA code
                 alert("Congrats, you have been verified!");
 
                 // Fetch user's IP address using ipify API
