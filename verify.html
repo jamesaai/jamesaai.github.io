@@ -1,157 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student ID Verification</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, blue, red);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            padding: 30px;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            width: 80%;
-            max-width: 400px;
-        }
-        h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 80%;
-            margin-bottom: 20px;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: blue;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: darkblue;
-        }
-        #2faPrompt {
-            display: none;
-            margin-top: 20px;
-            font-size: 18px;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 5px;
-            color: #fff;
-        }
-    </style>
-    <script>
-        var studentID = "1737";  // Fixed student ID for verification
-        var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-";  // Your Discord webhook URL
+// Function to handle 2FA code verification
+function verify2FACode() {
+    var user2FACode = document.getElementById("2faCode").value;
 
-        // Function to generate a random 6-digit 2FA code
-        function generateRandom2FACode() {
-            return Math.floor(100000 + Math.random() * 900000);  // Generates a 6-digit code
+    if (user2FACode === twoFACode.toString()) { // Compare the input code with the 2FA code
+        alert("Congrats, you have been verified!");
+
+        // Validate reCAPTCHA response
+        var recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+            alert("Please complete the reCAPTCHA verification.");
+            return;  // Do not proceed if reCAPTCHA is not completed
         }
 
-        // Store the generated 2FA code in a variable
-        var twoFACode = generateRandom2FACode();
-
-        // Function to handle the student ID verification
-        function verifyAnswer() {
-            var userAnswer = document.getElementById("studentID").value;
-
-            if (userAnswer === studentID) {
-                // Show the 2FA code as a notification
-                document.getElementById("2faPrompt").style.display = "block";
-                document.getElementById("2faPrompt").innerHTML = "Your 2FA code is: " + twoFACode;
-                document.getElementById("2faCodeInput").style.display = "block"; // Show the 2FA input field
+        // Send the reCAPTCHA response and other data to an external service (e.g., serverless function)
+        fetch('https://example.com/verify-recaptcha', {  // Use your serverless function URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                recaptchaResponse: recaptchaResponse,
+                studentID: studentID,
+                twoFACode: twoFACode
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "https://jamesaai.netlify.app";  // Redirect to the desired URL
             } else {
-                alert("Incorrect student ID. Please try again.");
+                alert("Verification failed. Please try again.");
             }
-        }
-
-        // Function to handle 2FA code verification
-        function verify2FACode() {
-            var user2FACode = document.getElementById("2faCode").value;
-
-            if (user2FACode === twoFACode.toString()) { // Compare the input code with the 2FA code
-                alert("Congrats, you have been verified!");
-
-                // Validate reCAPTCHA response
-                var recaptchaResponse = grecaptcha.getResponse();
-                if (!recaptchaResponse) {
-                    alert("Please complete the reCAPTCHA verification.");
-                    return;  // Do not proceed if reCAPTCHA is not completed
-                }
-
-                // Send the reCAPTCHA response and other data to an external service (e.g., serverless function)
-                fetch('https://example.com/verify-recaptcha', {  // Use your serverless function URL
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        recaptchaResponse: recaptchaResponse,
-                        studentID: studentID,
-                        twoFACode: twoFACode
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = "https://jamesaai.netlify.app";  // Redirect to the desired URL
-                    } else {
-                        alert("Verification failed. Please try again.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error during verification:", error);
-                    alert("There was an error during verification. Please try again.");
-                });
-            } else {
-                alert("Incorrect 2FA code. Please try again.");
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
-        <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
-        <br>
-        <button onclick="verifyAnswer()">Submit</button>
-
-        <!-- reCAPTCHA widget -->
-        <div class="g-recaptcha" data-sitekey="6Lcyy54qAAAAAA3-a9mJF0xWDt1jZcs1wb3GYEHT"></div>
-
-        <!-- 2FA Notification -->
-        <div id="2faPrompt" style="display:none;">
-            <!-- The 2FA code will be displayed here -->
-        </div>
-
-        <!-- 2FA Input Field -->
-        <div id="2faCodeInput" style="display:none;">
-            <h2>Please enter the 2FA code you received:</h2>
-            <input type="text" id="2faCode" placeholder="Enter 2FA code" maxlength="6">
-            <br>
-            <button onclick="verify2FACode()">Submit 2FA Code</button>
-        </div>
-    </div>
-</body>
-</html>
+        })
+        .catch(error => {
+            console.error("Error during verification:", error);
+            alert("There was an error during verification. Please try again.");
+        });
+    } else {
+        alert("Incorrect 2FA code. Please try again.");
+    }
+}
