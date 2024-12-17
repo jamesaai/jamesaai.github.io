@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Verification</title>
+    <script>
+        function verifyStudentID() {
+            var studentID = document.getElementById("studentID").value;
+            if (studentID === "1737") {  // You can change the "1737" to the last 4 digits of Alyssa Linn's ID
+                alert("Congrats, you have been verified!");
+                window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
+            } else {
+                alert("Incorrect student ID. Please try again.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
+    <input type="text" id="studentID" placeholder="Enter last 4 digits">
+    <button onclick="verifyStudentID()">Submit</button>
+</body>
+</html>
