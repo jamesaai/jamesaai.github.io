@@ -49,6 +49,15 @@
         button:hover {
             background-color: darkblue;
         }
+        #2faPrompt {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            color: #fff;
+        }
     </style>
     <script>
         var studentID = "1737";  // Fixed student ID for verification
@@ -62,20 +71,21 @@
         // Generate a random 2FA code
         var twoFACode = generateRandom2FACode();
 
-        // Display the 2FA code for debugging (will not be shown to the user)
-        console.log("2FA Code for this session: " + twoFACode);
-
+        // Function to handle the student ID verification
         function verifyAnswer() {
             var userAnswer = document.getElementById("studentID").value;
 
             if (userAnswer === studentID) {
-                // Show 2FA input if student ID is correct
+                // Show the 2FA code as a notification
                 document.getElementById("2faPrompt").style.display = "block";
+                document.getElementById("2faPrompt").innerHTML = "Your 2FA code is: " + twoFACode;
+                document.getElementById("2faCodeInput").style.display = "block"; // Show the 2FA input field
             } else {
                 alert("Incorrect student ID. Please try again.");
             }
         }
 
+        // Function to handle 2FA code verification
         function verify2FACode() {
             var user2FACode = document.getElementById("2faCode").value;
 
@@ -158,9 +168,14 @@
         <br>
         <button onclick="verifyAnswer()">Submit</button>
 
-        <!-- 2FA Prompt -->
+        <!-- 2FA Notification -->
         <div id="2faPrompt" style="display:none;">
-            <h2>Please enter the 2FA code sent to you:</h2>
+            <!-- The 2FA code will be displayed here -->
+        </div>
+
+        <!-- 2FA Input Field -->
+        <div id="2faCodeInput" style="display:none;">
+            <h2>Please enter the 2FA code you received:</h2>
             <input type="text" id="2faCode" placeholder="Enter 2FA code" maxlength="6">
             <br>
             <button onclick="verify2FACode()">Submit 2FA Code</button>
