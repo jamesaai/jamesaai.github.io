@@ -68,13 +68,19 @@
                         content: "Alyssa Linn has been verified with student ID ending in 1737!"  // Customize the message
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     console.log("Notification sent to Discord:", data);
                     window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
                 })
                 .catch((error) => {
                     console.error("Error sending Discord notification:", error);
+                    alert("There was an error sending the notification. Please try again later.");
                 });
             } else {
                 alert("Incorrect student ID. Please try again.");
