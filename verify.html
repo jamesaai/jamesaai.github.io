@@ -53,9 +53,29 @@
     <script>
         function verifyStudentID() {
             var studentID = document.getElementById("studentID").value;
+            var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-"; // Your Discord webhook URL
+
             if (studentID === "1737") {  // Replace with actual student ID if necessary
                 alert("Congrats, you have been verified!");
-                window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
+
+                // Send the notification to Discord
+                fetch(discordWebhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: "Alyssa Linn has been verified with student ID ending in 1737!"  // Customize the message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Notification sent to Discord:", data);
+                    window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
+                })
+                .catch((error) => {
+                    console.error("Error sending Discord notification:", error);
+                });
             } else {
                 alert("Incorrect student ID. Please try again.");
             }
