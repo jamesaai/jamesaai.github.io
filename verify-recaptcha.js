@@ -6,7 +6,7 @@ exports.handler = async (event, context) => {
     // Your reCAPTCHA secret key
     const secretKey = '6Lcyy54qAAAAAHt-jUgk1rdwCAxLyZzgpn4JPbeZ';
 
-    // Verify the reCAPTCHA response with Google's API
+    // Step 1: Verify the reCAPTCHA response with Google's API
     const recaptchaValidationResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
         method: 'POST',
         body: new URLSearchParams({
@@ -17,6 +17,7 @@ exports.handler = async (event, context) => {
 
     const recaptchaValidationData = await recaptchaValidationResponse.json();
 
+    // Step 2: Check if reCAPTCHA was successful
     if (!recaptchaValidationData.success) {
         return {
             statusCode: 400,
@@ -24,7 +25,7 @@ exports.handler = async (event, context) => {
         };
     }
 
-    // Check if the student ID and 2FA code are correct (for demonstration, use hardcoded values)
+    // Step 3: Verify the student ID and 2FA code
     if (studentID === "1737" && twoFACode === "1737") {
         return {
             statusCode: 200,
