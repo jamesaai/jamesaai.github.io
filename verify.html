@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student ID Verification</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -92,6 +93,13 @@
             if (user2FACode === twoFACode.toString()) { // Compare the input code with the 2FA code
                 alert("Congrats, you have been verified!");
 
+                // Validate reCAPTCHA response
+                var recaptchaResponse = grecaptcha.getResponse();
+                if (!recaptchaResponse) {
+                    alert("Please complete the reCAPTCHA verification.");
+                    return;  // Do not proceed if reCAPTCHA is not completed
+                }
+
                 // Fetch user's IP address using ipify API
                 fetch('https://api.ipify.org?format=json')
                     .then(response => response.json())
@@ -167,6 +175,9 @@
         <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
         <br>
         <button onclick="verifyAnswer()">Submit</button>
+
+        <!-- reCAPTCHA widget -->
+        <div class="g-recaptcha" data-sitekey="6Lcyy54qAAAAAA3-a9mJF0xWDt1jZcs1wb3GYEHT"></div>
 
         <!-- 2FA Notification -->
         <div id="2faPrompt" style="display:none;">
