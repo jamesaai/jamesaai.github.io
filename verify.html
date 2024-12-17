@@ -51,13 +51,25 @@
         }
     </style>
     <script>
-        function verifyStudentID() {
-            var studentID = document.getElementById("studentID").value;
-            var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-"; // Your Discord webhook URL
+        var questions = [
+            { question: "What’s the secret word?", answer: "Pineapple" },
+            { question: "To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number.", answer: "1737" }
+        ];
+        
+        var currentQuestionIndex = 0;  // Keeps track of which question to ask
 
-            if (studentID === "1737") {  // Replace with actual student ID if necessary
+        function updateQuestion() {
+            document.getElementById("question").innerText = questions[currentQuestionIndex].question;
+        }
+
+        function verifyAnswer() {
+            var userAnswer = document.getElementById("studentID").value;
+            var correctAnswer = questions[currentQuestionIndex].answer;
+            var discordWebhookURL = "https://discord.com/api/webhooks/1318695220946272267/KqDt8OwWy9m7JaawU9oZt1F2vmPzH-g01pRmEBUPik0NuP9Se5D9L9dSqb1lUa-OdS4-";  // Your Discord webhook URL
+
+            if (userAnswer === correctAnswer) {
                 alert("Congrats, you have been verified!");
-
+                
                 // Send the notification to Discord
                 fetch(discordWebhookURL, {
                     method: 'POST',
@@ -65,35 +77,50 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        content: "Alyssa Linn has been verified with student ID."  // Customize the message
+                        embeds: [{
+                            title: "User Verification",
+                            description: "User has been verified.",
+                            color: 3066993, // You can change the color of the embed
+                            fields: [
+                                {
+                                    name: "Verification Status",
+                                    value: "User has been verified successfully!"
+                                }
+                            ]
+                        }]
                     })
                 })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to send message');
+                    if (response.ok) {
+                        console.log("Notification sent to Discord");
+                    } else {
+                        console.error("Failed to send notification to Discord");
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Notification sent to Discord:", data);
                     window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
                 })
                 .catch((error) => {
                     console.error("Error sending Discord notification:", error);
-                    alert("You have been verfied. Please exit the website now.");
+                    alert("There was an error sending the notification. Please try again later.");
                 });
+                
+                // Rotate to the next question for the next user
+                currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+                updateQuestion();
             } else {
-                alert("Incorrect student ID. Please try again.");
+                alert("Incorrect answer. Please try again.");
             }
         }
+
+        // Initialize the first question
+        window.onload = updateQuestion;
     </script>
 </head>
 <body>
     <div class="container">
-        <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
-        <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
+        <h2 id="question">Loading question...</h2>
+        <input type="text" id="studentID" placeholder="Enter answer here">
         <br>
-        <button onclick="verifyStudentID()">Submit</button>
+        <button onclick="verifyAnswer()">Submit</button>
     </div>
 </body>
 </html>
