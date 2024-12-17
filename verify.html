@@ -4,10 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student ID Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, blue, red);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 400px;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            margin-bottom: 20px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkblue;
+        }
+    </style>
     <script>
         function verifyStudentID() {
             var studentID = document.getElementById("studentID").value;
-            if (studentID === "1737") {  // You can change the "1737" to the last 4 digits of Alyssa Linn's ID
+            if (studentID === "1737") {  // Replace with actual student ID if necessary
                 alert("Congrats, you have been verified!");
                 window.location.href = "https://jamesaai.netlify.app"; // Redirect to this URL
             } else {
@@ -17,8 +63,11 @@
     </script>
 </head>
 <body>
-    <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
-    <input type="text" id="studentID" placeholder="Enter last 4 digits">
-    <button onclick="verifyStudentID()">Submit</button>
+    <div class="container">
+        <h2>To verify that this is Alyssa Linn, please tell me the last 4 digits of your student ID number:</h2>
+        <input type="text" id="studentID" placeholder="Enter last 4 digits" maxlength="4">
+        <br>
+        <button onclick="verifyStudentID()">Submit</button>
+    </div>
 </body>
 </html>
