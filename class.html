@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #1a1a2e, #16213e);
+            background: linear-gradient(120deg, #3b3c56, #23243b);
             color: white;
             display: flex;
             flex-direction: column;
@@ -138,6 +138,52 @@
         .add-button:hover {
             transform: scale(1.1);
         }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background: #2c2f48;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content input,
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .modal-content button {
+            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -155,11 +201,21 @@
         <!-- Classes will be dynamically inserted here -->
     </div>
 
-    <button class="add-button">+</button>
+    <button class="add-button" id="add-class-btn">+</button>
 
     <footer>
         Schedule inspired by Saturn&#39;s design.
     </footer>
+
+    <div class="modal" id="add-class-modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Add New Class</h2>
+            <input type="text" id="class-name" placeholder="Class Name">
+            <input type="time" id="class-start" placeholder="Start Time">
+            <input type="time" id="class-end" placeholder="End Time">
+            <button id="save-class">Add Class</button>
+        </div>
+    </div>
 
     <script>
         const schedule = {
@@ -242,6 +298,27 @@
 
             document.getElementById("day-indicator").textContent = isADay() ? "A-Day" : "B-Day";
         }
+
+        function toggleModal(show) {
+            const modal = document.getElementById("add-class-modal");
+            modal.style.display = show ? "flex" : "none";
+        }
+
+        function addClass() {
+            const name = document.getElementById("class-name").value;
+            const start = document.getElementById("class-start").value;
+            const end = document.getElementById("class-end").value;
+
+            if (name && start && end) {
+                const currentDay = isADay() ? "A-Day" : "B-Day";
+                schedule[currentDay].push({ name, start, end });
+                toggleModal(false);
+                updateSchedule();
+            }
+        }
+
+        document.getElementById("add-class-btn").addEventListener("click", () => toggleModal(true));
+        document.getElementById("save-class").addEventListener("click", addClass);
 
         // Update schedule every second
         setInterval(updateSchedule, 1000);
