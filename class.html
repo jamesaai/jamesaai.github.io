@@ -97,23 +97,23 @@
             <tbody>
                 <tr>
                     <td>8:00 AM - 9:00 AM</td>
-                    <td class="current-class"><a href="#">PE</a></td>
-                    <td><a href="#">Math</a></td>
+                    <td id="pe" class="class"><a href="#">PE</a></td>
+                    <td id="math" class="class"><a href="#">Math</a></td>
                 </tr>
                 <tr>
                     <td>9:10 AM - 10:10 AM</td>
-                    <td class="current-class"><a href="#">Spanish</a></td>
-                    <td><a href="#">Aerospace</a></td>
+                    <td id="spanish" class="class"><a href="#">Spanish</a></td>
+                    <td id="aerospace" class="class"><a href="#">Aerospace</a></td>
                 </tr>
                 <tr>
                     <td>10:20 AM - 11:20 AM</td>
-                    <td class="current-class"><a href="#">Biology</a></td>
-                    <td><a href="#">Biology</a></td>
+                    <td id="biology" class="class"><a href="#">Biology</a></td>
+                    <td id="biology-b" class="class"><a href="#">Biology</a></td>
                 </tr>
                 <tr>
                     <td>11:30 AM - 12:30 PM</td>
-                    <td class="current-class"><a href="#">ELA</a></td>
-                    <td><a href="#">AP World History</a></td>
+                    <td id="ela" class="class"><a href="#">ELA</a></td>
+                    <td id="apwh" class="class"><a href="#">AP World History</a></td>
                 </tr>
             </tbody>
         </table>
@@ -122,5 +122,51 @@
     <footer>
         <p>Schedule powered by James' School Routine</p>
     </footer>
+
+    <script>
+        function getCurrentClass() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const timeString = `${hour}:${minute < 10 ? "0" + minute : minute}`;
+            
+            // Define class times (example times for A-Day and B-Day)
+            const classTimes = {
+                "A-Day": [
+                    { start: "8:00", end: "9:00", id: "pe" },
+                    { start: "9:10", end: "10:10", id: "spanish" },
+                    { start: "10:20", end: "11:20", id: "biology" },
+                    { start: "11:30", end: "12:30", id: "ela" }
+                ],
+                "B-Day": [
+                    { start: "8:00", end: "9:00", id: "math" },
+                    { start: "9:10", end: "10:10", id: "aerospace" },
+                    { start: "10:20", end: "11:20", id: "biology-b" },
+                    { start: "11:30", end: "12:30", id: "apwh" }
+                ]
+            };
+
+            // Get the current day (A-Day or B-Day)
+            const isADay = (Math.floor((now.getDate() - 1) / 2) % 2 === 0);
+            const day = isADay ? "A-Day" : "B-Day";
+            const schedule = classTimes[day];
+
+            // Highlight the current class based on the time
+            schedule.forEach((classTime) => {
+                const { start, end, id } = classTime;
+                if (timeString >= start && timeString <= end) {
+                    document.getElementById(id).classList.add("current-class");
+                } else {
+                    document.getElementById(id).classList.remove("current-class");
+                }
+            });
+        }
+
+        // Call the function to highlight the current class when the page loads
+        window.onload = getCurrentClass;
+
+        // Update the current class every minute (optional)
+        setInterval(getCurrentClass, 60000);
+    </script>
 </body>
 </html>
