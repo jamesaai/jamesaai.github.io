@@ -14,66 +14,71 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #1d2671, #c33764);
+            background: linear-gradient(to bottom, #4c6ef5, #272343);
             color: white;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             background: rgba(0, 0, 0, 0.8);
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         header {
             padding: 20px;
             text-align: center;
-            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            background: linear-gradient(to right, #6e45e2, #88d3ce);
         }
 
         header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
 
+        header p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Login Page */
         .login-form {
             padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
 
         .login-form input {
             margin-bottom: 15px;
-            padding: 10px;
+            padding: 12px;
             font-size: 1rem;
             border: none;
-            border-radius: 5px;
-            width: 90%;
+            border-radius: 10px;
         }
 
         .login-form button {
-            padding: 10px;
+            padding: 12px;
             font-size: 1rem;
             color: white;
-            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            background: linear-gradient(to right, #6e45e2, #88d3ce);
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            width: 90%;
-            transition: transform 0.2s, background 0.3s;
+            transition: transform 0.2s;
         }
 
         .login-form button:hover {
             transform: scale(1.05);
-            background: linear-gradient(120deg, #88d3ce, #6e45e2);
         }
 
+        /* Schedule Page */
         .schedule {
             display: none;
             padding: 20px;
@@ -85,8 +90,8 @@
 
         .class-block {
             background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 10px;
+            padding: 10px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
@@ -94,7 +99,7 @@
         }
 
         .class-name {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         .class-details {
@@ -108,11 +113,11 @@
             width: 100%;
             padding: 10px;
             text-align: center;
-            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            background: linear-gradient(to right, #6e45e2, #88d3ce);
             border: none;
             color: white;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 10px;
             text-decoration: none;
         }
 
@@ -138,36 +143,63 @@
             border-radius: 15px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         .modal-content input,
         .modal-content button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
         }
 
         .modal-content button {
-            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            background: linear-gradient(to right, #6e45e2, #88d3ce);
             color: white;
             cursor: pointer;
         }
 
+        /* New Navigation Buttons */
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .nav button {
+            background: none;
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .nav button:hover {
+            opacity: 1;
+        }
+
+        /* Timer */
         .timer {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: conic-gradient(#88d3ce, #6e45e2);
+            margin: 20px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px auto;
+        }
+
+        .timer-circle {
+            width: 100px;
+            height: 100px;
+            border: 5px solid #88d3ce;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
+            color: #88d3ce;
         }
     </style>
 </head>
@@ -175,6 +207,7 @@
     <div class="container">
         <header>
             <h1>Welcome to Saturn Scheduler</h1>
+            <p>Stay on top of your schedule</p>
         </header>
 
         <div class="login-form" id="login-form">
@@ -184,11 +217,21 @@
         </div>
 
         <div class="schedule" id="schedule">
+            <div class="nav">
+                <button id="schedule-btn">Schedule</button>
+                <button id="friends-btn">Friends</button>
+                <button id="notifications-btn">Notifications</button>
+            </div>
+
             <h2>Your Schedule</h2>
             <div id="class-list">
                 <!-- Classes will be dynamically inserted here -->
             </div>
-            <div class="timer" id="timer">00:00</div>
+
+            <div class="timer">
+                <div class="timer-circle" id="timer">00:00</div>
+            </div>
+
             <button class="add-class-btn" id="show-add-class-modal">Add Class</button>
         </div>
     </div>
@@ -209,7 +252,7 @@
         const scheduleContainer = document.getElementById('schedule');
         const classList = document.getElementById('class-list');
         const addClassModal = document.getElementById('add-class-modal');
-        const timerElement = document.getElementById('timer');
+        const timerDisplay = document.getElementById('timer');
 
         let schedule = [];
 
@@ -220,7 +263,7 @@
             if (username && password) {
                 loginForm.style.display = 'none';
                 scheduleContainer.style.display = 'block';
-                startTimer();
+                startTimer(60); // Example timer for 1 hour
             } else {
                 alert('Please enter both username and password');
             }
@@ -272,21 +315,21 @@
             updateSchedule();
         }
 
+        function startTimer(duration) {
+            let timer = duration;
+            setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timer > 0) timer--;
+            }, 1000);
+        }
+
         addClassModal.addEventListener('click', (e) => {
             if (e.target === addClassModal) {
                 addClassModal.style.display = 'none';
             }
         });
-
-        function startTimer() {
-            let seconds = 0;
-            setInterval(() => {
-                seconds++;
-                const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
-                const secs = String(seconds % 60).padStart(2, '0');
-                timerElement.textContent = `${mins}:${secs}`;
-            }, 1000);
-        }
     </script>
 </body>
 </html>
