@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saturn-Like School Schedule</title>
+    <title>Saturn-like Scheduler</title>
     <style>
         /* General Styles */
         * {
@@ -14,87 +14,80 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #3b3c56, #23243b);
+            background: linear-gradient(120deg, #2c3e50, #4ca1af);
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
             min-height: 100vh;
-            overflow: hidden;
-        }
-
-        header {
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.1);
-            width: 100%;
-            max-width: 800px;
-            padding: 10px 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        header .profile {
-            display: flex;
-            align-items: center;
-        }
-
-        .profile img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        h1 {
-            font-size: 1.5rem;
         }
 
         .container {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
             padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+        }
+
+        .login-form {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-form input {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .login-form button {
+            padding: 10px;
+            font-size: 1rem;
+            color: white;
+            background: linear-gradient(120deg, #6e45e2, #88d3ce);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-form button:hover {
+            transform: scale(1.05);
+        }
+
+        .schedule {
+            display: none;
+            padding: 20px;
+        }
+
+        .schedule h2 {
+            margin-bottom: 15px;
         }
 
         .class-block {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.2);
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .class-block .progress-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: linear-gradient(120deg, #6e45e2, #88d3ce);
-            opacity: 0.7;
-            border-radius: 10px;
-            z-index: 0;
-        }
-
-        .class-info {
-            display: flex;
-            flex-direction: column;
-            z-index: 1;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .class-name {
             font-size: 1.2rem;
-            font-weight: bold;
         }
 
         .class-details {
@@ -102,86 +95,42 @@
             opacity: 0.8;
         }
 
-        .time-left {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #ffd700;
-            z-index: 1;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-buttons button {
-            background: #ff5555;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .action-buttons button.edit {
-            background: #4caf50;
-        }
-
-        footer {
+        .add-class-btn {
             margin-top: 20px;
-            font-size: 0.9rem;
+            display: block;
+            width: 100%;
+            padding: 10px;
             text-align: center;
-            opacity: 0.7;
-        }
-
-        .add-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
             background: linear-gradient(120deg, #6e45e2, #88d3ce);
-            color: white;
             border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
+            border-radius: 5px;
+            text-decoration: none;
         }
 
-        .add-button:hover {
-            transform: scale(1.1);
+        .add-class-btn:hover {
+            opacity: 0.9;
         }
 
-        .modal {
+        .add-class-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 10;
         }
 
         .modal-content {
-            background: #2c2f48;
+            background: #2c3e50;
             padding: 20px;
             border-radius: 10px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
         }
 
         .modal-content input,
@@ -191,7 +140,6 @@
             margin-bottom: 10px;
             border: none;
             border-radius: 5px;
-            font-size: 1rem;
         }
 
         .modal-content button {
@@ -199,187 +147,109 @@
             color: white;
             cursor: pointer;
         }
-
-        .modal-content button:hover {
-            opacity: 0.9;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="profile">
-            <img src="https://via.placeholder.com/50" alt="Profile Picture">
-            <h1>James' Schedule</h1>
-        </div>
-        <div>
-            <span id="day-indicator">A-Day</span>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Welcome to Saturn Scheduler</h1>
+        </header>
 
-    <div class="container" id="schedule">
-        <!-- Classes will be dynamically inserted here -->
+        <div class="login-form" id="login-form">
+            <input type="text" id="username" placeholder="Enter your username">
+            <input type="password" id="password" placeholder="Enter your password">
+            <button id="login-btn">Login</button>
+        </div>
+
+        <div class="schedule" id="schedule">
+            <h2>Your Schedule</h2>
+            <div id="class-list">
+                <!-- Classes will be dynamically inserted here -->
+            </div>
+            <button class="add-class-btn" id="show-add-class-modal">Add Class</button>
+        </div>
     </div>
 
-    <button class="add-button" id="add-class-btn">+</button>
-
-    <footer>
-        Schedule inspired by Saturn&#39;s design.
-    </footer>
-
-    <div class="modal" id="add-class-modal" style="display: none;">
+    <div class="add-class-modal" id="add-class-modal">
         <div class="modal-content">
-            <h2>Add New Class</h2>
-            <input type="text" id="class-name" placeholder="Class Name">
-            <input type="text" id="room-number" placeholder="Room Number">
-            <input type="text" id="teacher-name" placeholder="Teacher's Name">
-            <input type="time" id="class-start" placeholder="Start Time">
-            <input type="time" id="class-end" placeholder="End Time">
-            <button id="save-class">Add Class</button>
+            <input type="text" id="new-class-name" placeholder="Class Name">
+            <input type="text" id="new-teacher-name" placeholder="Teacher Name">
+            <input type="text" id="new-room-number" placeholder="Room Number">
+            <input type="time" id="new-start-time" placeholder="Start Time">
+            <input type="time" id="new-end-time" placeholder="End Time">
+            <button id="add-class-btn">Add Class</button>
         </div>
     </div>
 
     <script>
-        const schedule = {
-            "A-Day": [
-                { name: "PE", room: "Gym", teacher: "Mr. Smith", start: "08:00", end: "09:00" },
-                { name: "Spanish", room: "202", teacher: "Ms. Martinez", start: "09:10", end: "10:10" },
-                { name: "Biology", room: "305", teacher: "Dr. Green", start: "10:20", end: "11:20" },
-                { name: "ELA", room: "102", teacher: "Ms. Brown", start: "11:30", end: "12:30" },
-            ],
-            "B-Day": [
-                { name: "Math", room: "201", teacher: "Mr. Lee", start: "08:00", end: "09:00" },
-                { name: "Aerospace", room: "Lab A", teacher: "Dr. White", start: "09:10", end: "10:10" },
-                { name: "Biology", room: "305", teacher: "Dr. Green", start: "10:20", end: "11:20" },
-                { name: "AP World History", room: "104", teacher: "Mrs. Clark", start: "11:30", end: "12:30" },
-            ],
-        };
+        const loginForm = document.getElementById('login-form');
+        const scheduleContainer = document.getElementById('schedule');
+        const classList = document.getElementById('class-list');
+        const addClassModal = document.getElementById('add-class-modal');
 
-        function isADay() {
-            const today = new Date();
-            return today.getDate() % 2 === 1; // Simple alternation logic
-        }
+        let schedule = [];
 
-        function getTimeRemaining(endTime) {
-            const now = new Date();
-            const [endHour, endMinute] = endTime.split(":" ).map(Number);
-            const endDateTime = new Date();
-            endDateTime.setHours(endHour, endMinute, 0, 0);
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-            const diff = endDateTime - now;
-            if (diff <= 0) return "Class Over";
+            if (username && password) {
+                loginForm.style.display = 'none';
+                scheduleContainer.style.display = 'block';
+            } else {
+                alert('Please enter both username and password');
+            }
+        });
 
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
+        document.getElementById('show-add-class-modal').addEventListener('click', () => {
+            addClassModal.style.display = 'flex';
+        });
 
-            return `${minutes}m ${seconds}s`;
-        }
+        document.getElementById('add-class-btn').addEventListener('click', () => {
+            const className = document.getElementById('new-class-name').value;
+            const teacherName = document.getElementById('new-teacher-name').value;
+            const roomNumber = document.getElementById('new-room-number').value;
+            const startTime = document.getElementById('new-start-time').value;
+            const endTime = document.getElementById('new-end-time').value;
 
-        function updateProgressBar(startTime, endTime) {
-            const now = new Date();
-            const [startHour, startMinute] = startTime.split(":" ).map(Number);
-            const [endHour, endMinute] = endTime.split(":" ).map(Number);
-
-            const startDateTime = new Date();
-            startDateTime.setHours(startHour, startMinute, 0, 0);
-
-            const endDateTime = new Date();
-            endDateTime.setHours(endHour, endMinute, 0, 0);
-
-            const progress = Math.min(
-                100,
-                Math.max(0, ((now - startDateTime) / (endDateTime - startDateTime)) * 100)
-            );
-
-            return `${progress}%`;
-        }
+            if (className && teacherName && roomNumber && startTime && endTime) {
+                schedule.push({ className, teacherName, roomNumber, startTime, endTime });
+                updateSchedule();
+                addClassModal.style.display = 'none';
+            } else {
+                alert('Please fill out all fields');
+            }
+        });
 
         function updateSchedule() {
-            const currentSchedule = isADay() ? schedule["A-Day"] : schedule["B-Day"];
-            const container = document.getElementById("schedule");
-            container.innerHTML = ""; // Clear existing schedule
-
-            currentSchedule.forEach((cls, index) => {
-                const timeLeft = getTimeRemaining(cls.end);
-                const progressWidth = updateProgressBar(cls.start, cls.end);
-
-                const classBlock = document.createElement("div");
-                classBlock.className = "class-block";
+            classList.innerHTML = '';
+            schedule.forEach((cls, index) => {
+                const classBlock = document.createElement('div');
+                classBlock.className = 'class-block';
 
                 classBlock.innerHTML = `
-                    <div class="progress-bar" style="width: ${progressWidth};"></div>
-                    <div class="class-info">
-                        <div class="class-name">${cls.name}</div>
-                        <div class="class-details">Room: ${cls.room} | Teacher: ${cls.teacher}</div>
-                        <div class="class-details">${cls.start} - ${cls.end}</div>
+                    <div class="class-name">${cls.className}</div>
+                    <div class="class-details">
+                        Teacher: ${cls.teacherName} | Room: ${cls.roomNumber}<br>
+                        ${cls.startTime} - ${cls.endTime}
                     </div>
-                    <div class="time-left">${timeLeft}</div>
-                    <div class="action-buttons">
-                        <button class="edit" onclick="editClass(${index})">Edit</button>
-                        <button class="delete" onclick="deleteClass(${index})">Delete</button>
-                    </div>
+                    <button onclick="deleteClass(${index})">Delete</button>
                 `;
 
-                container.appendChild(classBlock);
+                classList.appendChild(classBlock);
             });
-
-            document.getElementById("day-indicator").textContent = isADay() ? "A-Day" : "B-Day";
-        }
-
-        function toggleModal(show) {
-            const modal = document.getElementById("add-class-modal");
-            modal.style.display = show ? "flex" : "none";
-        }
-
-        function addClass() {
-            const name = document.getElementById("class-name").value;
-            const room = document.getElementById("room-number").value;
-            const teacher = document.getElementById("teacher-name").value;
-            const start = document.getElementById("class-start").value;
-            const end = document.getElementById("class-end").value;
-
-            if (name && room && teacher && start && end) {
-                const currentDay = isADay() ? "A-Day" : "B-Day";
-                schedule[currentDay].push({ name, room, teacher, start, end });
-                toggleModal(false);
-                updateSchedule();
-            }
         }
 
         function deleteClass(index) {
-            const currentDay = isADay() ? "A-Day" : "B-Day";
-            schedule[currentDay].splice(index, 1);
+            schedule.splice(index, 1);
             updateSchedule();
         }
 
-        function editClass(index) {
-            const currentDay = isADay() ? "A-Day" : "B-Day";
-            const cls = schedule[currentDay][index];
-
-            document.getElementById("class-name").value = cls.name;
-            document.getElementById("room-number").value = cls.room;
-            document.getElementById("teacher-name").value = cls.teacher;
-            document.getElementById("class-start").value = cls.start;
-            document.getElementById("class-end").value = cls.end;
-
-            toggleModal(true);
-
-            document.getElementById("save-class").onclick = function () {
-                cls.name = document.getElementById("class-name").value;
-                cls.room = document.getElementById("room-number").value;
-                cls.teacher = document.getElementById("teacher-name").value;
-                cls.start = document.getElementById("class-start").value;
-                cls.end = document.getElementById("class-end").value;
-                toggleModal(false);
-                updateSchedule();
-            };
-        }
-
-        document.getElementById("add-class-btn").addEventListener("click", () => toggleModal(true));
-        document.getElementById("save-class").addEventListener("click", addClass);
-
-        // Update schedule every second
-        setInterval(updateSchedule, 1000);
-        updateSchedule();
+        addClassModal.addEventListener('click', (e) => {
+            if (e.target === addClassModal) {
+                addClassModal.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
