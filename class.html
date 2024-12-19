@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>James Saturn Classe</title>
+    <title>Saturn-Like School Schedule</title>
     <style>
         /* General Styles */
         * {
@@ -97,7 +97,7 @@
             font-weight: bold;
         }
 
-        .class-time {
+        .class-details {
             font-size: 0.9rem;
             opacity: 0.8;
         }
@@ -107,6 +107,25 @@
             font-weight: bold;
             color: #ffd700;
             z-index: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons button {
+            background: #ff5555;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons button.edit {
+            background: #4caf50;
         }
 
         footer {
@@ -211,6 +230,8 @@
         <div class="modal-content">
             <h2>Add New Class</h2>
             <input type="text" id="class-name" placeholder="Class Name">
+            <input type="text" id="room-number" placeholder="Room Number">
+            <input type="text" id="teacher-name" placeholder="Teacher's Name">
             <input type="time" id="class-start" placeholder="Start Time">
             <input type="time" id="class-end" placeholder="End Time">
             <button id="save-class">Add Class</button>
@@ -220,16 +241,16 @@
     <script>
         const schedule = {
             "A-Day": [
-                { name: "PE", start: "08:00", end: "09:00" },
-                { name: "Spanish", start: "09:10", end: "10:10" },
-                { name: "Biology", start: "10:20", end: "11:20" },
-                { name: "ELA", start: "11:30", end: "12:30" },
+                { name: "PE", room: "Gym", teacher: "Mr. Smith", start: "08:00", end: "09:00" },
+                { name: "Spanish", room: "202", teacher: "Ms. Martinez", start: "09:10", end: "10:10" },
+                { name: "Biology", room: "305", teacher: "Dr. Green", start: "10:20", end: "11:20" },
+                { name: "ELA", room: "102", teacher: "Ms. Brown", start: "11:30", end: "12:30" },
             ],
             "B-Day": [
-                { name: "Math", start: "08:00", end: "09:00" },
-                { name: "Aerospace", start: "09:10", end: "10:10" },
-                { name: "Biology", start: "10:20", end: "11:20" },
-                { name: "AP World History", start: "11:30", end: "12:30" },
+                { name: "Math", room: "201", teacher: "Mr. Lee", start: "08:00", end: "09:00" },
+                { name: "Aerospace", room: "Lab A", teacher: "Dr. White", start: "09:10", end: "10:10" },
+                { name: "Biology", room: "305", teacher: "Dr. Green", start: "10:20", end: "11:20" },
+                { name: "AP World History", room: "104", teacher: "Mrs. Clark", start: "11:30", end: "12:30" },
             ],
         };
 
@@ -240,7 +261,7 @@
 
         function getTimeRemaining(endTime) {
             const now = new Date();
-            const [endHour, endMinute] = endTime.split(":").map(Number);
+            const [endHour, endMinute] = endTime.split(":" ).map(Number);
             const endDateTime = new Date();
             endDateTime.setHours(endHour, endMinute, 0, 0);
 
@@ -255,8 +276,8 @@
 
         function updateProgressBar(startTime, endTime) {
             const now = new Date();
-            const [startHour, startMinute] = startTime.split(":").map(Number);
-            const [endHour, endMinute] = endTime.split(":").map(Number);
+            const [startHour, startMinute] = startTime.split(":" ).map(Number);
+            const [endHour, endMinute] = endTime.split(":" ).map(Number);
 
             const startDateTime = new Date();
             startDateTime.setHours(startHour, startMinute, 0, 0);
@@ -277,7 +298,7 @@
             const container = document.getElementById("schedule");
             container.innerHTML = ""; // Clear existing schedule
 
-            currentSchedule.forEach((cls) => {
+            currentSchedule.forEach((cls, index) => {
                 const timeLeft = getTimeRemaining(cls.end);
                 const progressWidth = updateProgressBar(cls.start, cls.end);
 
@@ -288,9 +309,14 @@
                     <div class="progress-bar" style="width: ${progressWidth};"></div>
                     <div class="class-info">
                         <div class="class-name">${cls.name}</div>
-                        <div class="class-time">${cls.start} - ${cls.end}</div>
+                        <div class="class-details">Room: ${cls.room} | Teacher: ${cls.teacher}</div>
+                        <div class="class-details">${cls.start} - ${cls.end}</div>
                     </div>
                     <div class="time-left">${timeLeft}</div>
+                    <div class="action-buttons">
+                        <button class="edit" onclick="editClass(${index})">Edit</button>
+                        <button class="delete" onclick="deleteClass(${index})">Delete</button>
+                    </div>
                 `;
 
                 container.appendChild(classBlock);
@@ -306,15 +332,46 @@
 
         function addClass() {
             const name = document.getElementById("class-name").value;
+            const room = document.getElementById("room-number").value;
+            const teacher = document.getElementById("teacher-name").value;
             const start = document.getElementById("class-start").value;
             const end = document.getElementById("class-end").value;
 
-            if (name && start && end) {
+            if (name && room && teacher && start && end) {
                 const currentDay = isADay() ? "A-Day" : "B-Day";
-                schedule[currentDay].push({ name, start, end });
+                schedule[currentDay].push({ name, room, teacher, start, end });
                 toggleModal(false);
                 updateSchedule();
             }
+        }
+
+        function deleteClass(index) {
+            const currentDay = isADay() ? "A-Day" : "B-Day";
+            schedule[currentDay].splice(index, 1);
+            updateSchedule();
+        }
+
+        function editClass(index) {
+            const currentDay = isADay() ? "A-Day" : "B-Day";
+            const cls = schedule[currentDay][index];
+
+            document.getElementById("class-name").value = cls.name;
+            document.getElementById("room-number").value = cls.room;
+            document.getElementById("teacher-name").value = cls.teacher;
+            document.getElementById("class-start").value = cls.start;
+            document.getElementById("class-end").value = cls.end;
+
+            toggleModal(true);
+
+            document.getElementById("save-class").onclick = function () {
+                cls.name = document.getElementById("class-name").value;
+                cls.room = document.getElementById("room-number").value;
+                cls.teacher = document.getElementById("teacher-name").value;
+                cls.start = document.getElementById("class-start").value;
+                cls.end = document.getElementById("class-end").value;
+                toggleModal(false);
+                updateSchedule();
+            };
         }
 
         document.getElementById("add-class-btn").addEventListener("click", () => toggleModal(true));
