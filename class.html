@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James' School Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .schedule-table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .schedule-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .schedule-table td {
+            background-color: #f9f9f9;
+        }
+        .schedule-table .current-class {
+            background-color: #ffeb3b;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>James' School Schedule</h1>
+        <p>Keep track of your classes for A-Day and B-Day</p>
+    </header>
+
+    <div class="container">
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>A-Day Classes</th>
+                    <th>B-Day Classes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>8:00 AM - 9:00 AM</td>
+                    <td class="current-class">PE</td>
+                    <td>Math</td>
+                </tr>
+                <tr>
+                    <td>9:10 AM - 10:10 AM</td>
+                    <td class="current-class">Spanish</td>
+                    <td>Aerospace</td>
+                </tr>
+                <tr>
+                    <td>10:20 AM - 11:20 AM</td>
+                    <td class="current-class">Biology</td>
+                    <td>Biology</td>
+                </tr>
+                <tr>
+                    <td>11:30 AM - 12:30 PM</td>
+                    <td class="current-class">ELA</td>
+                    <td>AP World History</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Schedule powered by James' School Routine</p>
+    </footer>
+</body>
+</html>
