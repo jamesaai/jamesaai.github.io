@@ -77,6 +77,11 @@
             width: 100%;
             bottom: 0;
         }
+        .countdown {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -119,6 +124,10 @@
         </table>
     </div>
 
+    <div class="container">
+        <div id="countdown" class="countdown">Time left: --:--</div>
+    </div>
+
     <footer>
         <p>Schedule powered by James' School Routine</p>
     </footer>
@@ -151,22 +160,36 @@
             const day = isADay ? "A-Day" : "B-Day";
             const schedule = classTimes[day];
 
-            // Highlight the current class based on the time
+            // Highlight the current class and calculate time left
+            let timeLeft = "--:--";
             schedule.forEach((classTime) => {
                 const { start, end, id } = classTime;
                 if (timeString >= start && timeString <= end) {
                     document.getElementById(id).classList.add("current-class");
+
+                    // Calculate time left
+                    const [endHour, endMinute] = end.split(":").map(Number);
+                    const endTime = new Date();
+                    endTime.setHours(endHour, endMinute, 0, 0);
+
+                    const diff = endTime - now;
+                    const minutesLeft = Math.floor(diff / 1000 / 60);
+                    const secondsLeft = Math.floor((diff / 1000) % 60);
+                    timeLeft = `${minutesLeft}:${secondsLeft < 10 ? "0" + secondsLeft : secondsLeft}`;
                 } else {
                     document.getElementById(id).classList.remove("current-class");
                 }
             });
+
+            // Update the countdown
+            document.getElementById("countdown").textContent = `Time left: ${timeLeft}`;
         }
 
-        // Call the function to highlight the current class when the page loads
+        // Call the function to highlight the current class and update countdown
         window.onload = getCurrentClass;
 
-        // Update the current class every minute (optional)
-        setInterval(getCurrentClass, 60000);
+        // Update every second
+        setInterval(getCurrentClass, 1000);
     </script>
 </body>
 </html>
