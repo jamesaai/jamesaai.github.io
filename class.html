@@ -6,56 +6,83 @@
     <title>James' School Schedule</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: white;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
         header {
-            background-color: #333;
+            background: #232946;
             color: white;
+            padding: 20px;
             text-align: center;
-            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        p {
+            font-size: 16px;
+            margin-top: 0;
         }
         .container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
+            justify-content: center;
+            padding: 20px;
         }
         .schedule-table {
             width: 80%;
+            max-width: 1000px;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .schedule-table th, .schedule-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
+            border: 1px solid #444;
         }
         .schedule-table th {
-            background-color: #4CAF50;
+            background-color: #4a90e2;
             color: white;
         }
         .schedule-table td {
-            background-color: #f9f9f9;
+            background-color: #2a2d3b;
+            color: #ccc;
+            transition: background-color 0.3s ease;
         }
-        .schedule-table .current-class {
-            background-color: #ffeb3b;
+        .schedule-table td:hover {
+            background-color: #53617d;
+        }
+        .current-class {
+            background-color: #ffcc00;
+            color: #2a2d3b;
             font-weight: bold;
         }
+        .schedule-table td a {
+            color: inherit;
+            text-decoration: none;
+        }
         footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
+            background-color: #232946;
             color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
     <header>
         <h1>James' School Schedule</h1>
-        <p>Keep track of your classes for A-Day and B-Day</p>
+        <p>Track your A-Day and B-Day classes</p>
     </header>
 
     <div class="container">
@@ -70,23 +97,23 @@
             <tbody>
                 <tr>
                     <td>8:00 AM - 9:00 AM</td>
-                    <td class="current-class">PE</td>
-                    <td>Math</td>
+                    <td class="current-class"><a href="#">PE</a></td>
+                    <td><a href="#">Math</a></td>
                 </tr>
                 <tr>
                     <td>9:10 AM - 10:10 AM</td>
-                    <td class="current-class">Spanish</td>
-                    <td>Aerospace</td>
+                    <td class="current-class"><a href="#">Spanish</a></td>
+                    <td><a href="#">Aerospace</a></td>
                 </tr>
                 <tr>
                     <td>10:20 AM - 11:20 AM</td>
-                    <td class="current-class">Biology</td>
-                    <td>Biology</td>
+                    <td class="current-class"><a href="#">Biology</a></td>
+                    <td><a href="#">Biology</a></td>
                 </tr>
                 <tr>
                     <td>11:30 AM - 12:30 PM</td>
-                    <td class="current-class">ELA</td>
-                    <td>AP World History</td>
+                    <td class="current-class"><a href="#">ELA</a></td>
+                    <td><a href="#">AP World History</a></td>
                 </tr>
             </tbody>
         </table>
