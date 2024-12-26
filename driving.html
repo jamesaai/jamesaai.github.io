@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Hours Log</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #89cff0, #6a5acd);
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .welcome {
+            text-align: center;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        button, input[type="button"], input[type="submit"], input[type="text"], input[type="date"], input[type="time"], input[type="number"], select {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="date"], input[type="time"], input[type="number"], select {
+            width: calc(100% - 22px);
+        }
+        input[type="submit"] {
+            background: #6a5acd;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #483d8b;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginPage" class="container">
+        <h1>Log In</h1>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required><br>
+
+            <input type="submit" value="Log In">
+        </form>
+    </div>
+
+    <div id="welcomePage" class="container hidden">
+        <div class="welcome">
+            <h1>Welcome, James!</h1>
+        </div>
+        <button onclick="showLogPage()">View Driving Logs</button>
+    </div>
+
+    <div id="logPage" class="container hidden">
+        <h1>Driving Hours Log</h1>
+
+        <form id="logForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required><br>
+
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" required><br>
+
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" required><br>
+
+            <label for="hours">Total Hours:</label>
+            <input type="number" id="hours" step="0.1" required><br>
+
+            <label for="weather">Weather Conditions:</label>
+            <select id="weather" required>
+                <option value="">Select...</option>
+                <option value="Clear">Clear</option>
+                <option value="Rainy">Rainy</option>
+                <option value="Snowy">Snowy</option>
+                <option value="Foggy">Foggy</option>
+            </select><br>
+
+            <label for="notes">Notes:</label>
+            <input type="text" id="notes" placeholder="Optional"><br>
+
+            <button type="button" onclick="addEntry()">Add Entry</button>
+        </form>
+
+        <h2>Logged Hours</h2>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Hours</th>
+                    <th>Weather</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <button onclick="exportToCSV()">Export to DMV</button>
+        <button onclick="logOut()">Log Out</button>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'driver' && password === 'teen') {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('welcomePage').classList.remove('hidden');
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+
+        function showLogPage() {
+            document.getElementById('welcomePage').classList.add('hidden');
+            document.getElementById('logPage').classList.remove('hidden');
+        }
+
+        function addEntry() {
+            const date = document.getElementById('date').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const hours = document.getElementById('hours').value;
+            const weather = document.getElementById('weather').value;
+            const notes = document.getElementById('notes').value;
+
+            if (!date || !startTime || !endTime || !hours || !weather) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const tableBody = document.getElementById('logTable').querySelector('tbody');
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${date}</td>
+                <td>${startTime}</td>
+                <td>${endTime}</td>
+                <td>${hours}</td>
+                <td>${weather}</td>
+                <td>${notes}</td>
+            `;
+
+            tableBody.appendChild(newRow);
+
+            document.getElementById('logForm').reset();
+        }
+
+        function exportToCSV() {
+            const table = document.getElementById('logTable');
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const csv = rows.map(row => 
+                Array.from(row.querySelectorAll('th, td')).map(cell => cell.textContent).join(',')
+            ).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'driving_hours_log.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function logOut() {
+            document.getElementById('logPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
