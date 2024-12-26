@@ -56,6 +56,14 @@
         input[type="submit"]:hover {
             background: #483d8b;
         }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            table, th, td {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -74,9 +82,10 @@
 
     <div id="welcomePage" class="container hidden">
         <div class="welcome">
-            <h1>Welcome, James!</h1>
+            <h1 id="welcomeMessage">Welcome, James!</h1>
         </div>
         <button onclick="showLogPage()">View Driving Logs</button>
+        <button onclick="showParentPage()">Parent Access</button>
     </div>
 
     <div id="logPage" class="container hidden">
@@ -104,6 +113,9 @@
                 <option value="Foggy">Foggy</option>
             </select><br>
 
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="Enter location" required><br>
+
             <label for="notes">Notes:</label>
             <input type="text" id="notes" placeholder="Optional"><br>
 
@@ -119,6 +131,7 @@
                     <th>End Time</th>
                     <th>Total Hours</th>
                     <th>Weather</th>
+                    <th>Location</th>
                     <th>Notes</th>
                 </tr>
             </thead>
@@ -130,15 +143,47 @@
         <button onclick="logOut()">Log Out</button>
     </div>
 
+    <div id="parentPage" class="container hidden">
+        <h1>Parent Dashboard</h1>
+        <h2>Child's Driving Logs</h2>
+        <table id="parentLogTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Hours</th>
+                    <th>Weather</th>
+                    <th>Location</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <button onclick="logOut()">Log Out</button>
+    </div>
+
     <script>
+        let userType = "";
+        const logs = [];
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             if (username === 'driver' && password === 'teen') {
+                userType = 'driver';
+                document.getElementById('welcomeMessage').textContent = 'Welcome, Driver!';
                 document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('welcomePage').classList.remove('hidden');
+            } else if (username === 'parent' && password === 'watcher') {
+                userType = 'parent';
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('parentPage').classList.remove('hidden');
+                displayParentLogs();
             } else {
                 alert('Invalid username or password.');
             }
@@ -149,34 +194,71 @@
             document.getElementById('logPage').classList.remove('hidden');
         }
 
+        function showParentPage() {
+            if (userType === 'driver') {
+                const parentUsername = prompt('Enter Parent Username:');
+                if (parentUsername) {
+                    alert(`Parent ${parentUsername} linked successfully.`);
+                } else {
+                    alert('No parent linked.');
+                }
+            }
+        }
+
         function addEntry() {
             const date = document.getElementById('date').value;
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
             const hours = document.getElementById('hours').value;
             const weather = document.getElementById('weather').value;
+            const location = document.getElementById('location').value;
             const notes = document.getElementById('notes').value;
 
-            if (!date || !startTime || !endTime || !hours || !weather) {
+            if (!date || !startTime || !endTime || !hours || !weather || !location) {
                 alert('Please fill in all required fields.');
                 return;
             }
 
-            const tableBody = document.getElementById('logTable').querySelector('tbody');
-            const newRow = document.createElement('tr');
-
-            newRow.innerHTML = `
-                <td>${date}</td>
-                <td>${startTime}</td>
-                <td>${endTime}</td>
-                <td>${hours}</td>
-                <td>${weather}</td>
-                <td>${notes}</td>
-            `;
-
-            tableBody.appendChild(newRow);
-
+            const entry = { date, startTime, endTime, hours, weather, location, notes };
+            logs.push(entry);
+            updateLogTable();
             document.getElementById('logForm').reset();
+        }
+
+        function updateLogTable() {
+            const tableBody = document.getElementById('logTable').querySelector('tbody');
+            tableBody.innerHTML = '';
+            logs.forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.date}</td>
+                    <td>${log.startTime}</td>
+                    <td>${log.endTime}</td>
+                    <td>${log.hours}</td>
+                    <td>${log.weather}</td>
+                    <td>${log.location}</td>
+                    <td>${log.notes}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function displayParentLogs() {
+            const tableBody = document.getElementById('parentLogTable').querySelector('tbody');
+            tableBody.innerHTML = '';
+            logs.forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.date}</td>
+                    <td>${log.startTime}</td>
+                    <td>${log.endTime}</td>
+                    <td>${log.hours}</td>
+                    <td>${log.weather}</td>
+                    <td>${log.location}</td>
+                    <td>${log.notes}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
         function exportToCSV() {
@@ -198,6 +280,8 @@
 
         function logOut() {
             document.getElementById('logPage').classList.add('hidden');
+            document.getElementById('parentPage').classList.add('hidden');
+            document.getElementById('welcomePage').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
         }
     </script>
