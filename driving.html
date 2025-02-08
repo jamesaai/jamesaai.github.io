@@ -3,297 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driving Hours Log Dashboard</title>
+    <title>Canvas Calendar Events</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
             padding: 0;
-            background: linear-gradient(135deg, #ff7e5f, #feb47b);
-            color: #fff;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .welcome {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .progress-bar {
-            height: 30px;
-            width: 100%;
-            background-color: #ddd;
-            border-radius: 5px;
-            overflow: hidden;
+        li {
+            background: #f4f4f4;
             margin: 10px 0;
-        }
-
-        .progress-bar-inner {
-            height: 100%;
-            width: 0%;
-            background-color: #4caf50;
-            text-align: center;
-            line-height: 30px;
-            color: white;
-            transition: width 0.5s ease-in-out;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #000;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
             padding: 10px;
-            text-align: left;
-        }
-
-        button, input[type="button"], input[type="submit"], input[type="text"], input[type="date"], input[type="time"], input[type="number"], select {
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            border: none;
             border-radius: 5px;
-        }
-
-        input[type="text"], input[type="date"], input[type="time"], input[type="number"], select {
-            width: calc(100% - 22px);
-        }
-
-        input[type="submit"] {
-            background: #feb47b;
-            color: white;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background: #ff7e5f;
-        }
-
-        .dashboard {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .dashboard-card {
-            flex: 1 1 calc(50% - 20px);
-            background: rgba(255, 255, 255, 0.9);
-            color: #000;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .dashboard-card h3 {
-            margin-top: 0;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-card {
-                flex: 1 1 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <div id="loginPage" class="container">
-        <h1>Log In</h1>
-        <form id="loginForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required><br>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" required><br>
-
-            <input type="submit" value="Log In">
-        </form>
-    </div>
-
-    <div id="welcomePage" class="container hidden">
-        <div class="welcome">
-            <h1>Welcome, <span id="welcomeUser">User</span>!</h1>
-            <p>Your goal is to log 40 hours of driving practice.</p>
-            <div class="progress-bar">
-                <div id="progress" class="progress-bar-inner">0%</div>
-            </div>
-            <button onclick="showLogPage()">View Driving Logs</button>
-        </div>
-    </div>
-
-    <div id="logPage" class="container hidden">
-        <h1>Driving Hours Log</h1>
-
-        <form id="logForm">
-            <label for="date">Date:</label>
-            <input type="date" id="date" required><br>
-
-            <label for="startTime">Start Time:</label>
-            <input type="time" id="startTime" required><br>
-
-            <label for="endTime">End Time:</label>
-            <input type="time" id="endTime" required><br>
-
-            <label for="hours">Total Hours:</label>
-            <input type="number" id="hours" step="0.1" required><br>
-
-            <label for="weather">Weather Conditions:</label>
-            <select id="weather" required>
-                <option value="">Select...</option>
-                <option value="Clear">Clear</option>
-                <option value="Rainy">Rainy</option>
-                <option value="Snowy">Snowy</option>
-                <option value="Foggy">Foggy</option>
-            </select><br>
-
-            <label for="location">Location:</label>
-            <input type="text" id="location" placeholder="Enter location" required><br>
-
-            <label for="notes">Notes:</label>
-            <input type="text" id="notes" placeholder="Optional"><br>
-
-            <button type="button" onclick="addEntry()">Add Entry</button>
-        </form>
-
-        <h2>Logged Hours</h2>
-        <table id="logTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Total Hours</th>
-                    <th>Weather</th>
-                    <th>Location</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-
-        <button onclick="exportToCSV()">Export to DMV</button>
-        <button onclick="logOut()">Log Out</button>
-    </div>
+    <h1>Canvas Calendar Events</h1>
+    <button onclick="fetchEvents()">Load Events</button>
+    <ul id="event-list"></ul>
 
     <script>
-        const goalHours = 40;
-        let logs = JSON.parse(localStorage.getItem('drivingLogs')) || [];
+        async function fetchEvents() {
+            const accountId = '130836';  // Replace with actual Canvas account ID
+            const token = '20214~zyUk2kCW82C6HkF9XzrzTxEHu6M2tvHULGGDWUFz3BUKTknhDRmawc3EvAXvfuux';
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch(`https://your-canvas-instance/api/v1/accounts/${accountId}/calendar_events`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            if (username === 'driver' && password === 'teen') {
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('welcomePage').classList.remove('hidden');
-                updateProgress();
-            } else if (username === 'parent' && password === 'guardian') {
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('logPage').classList.remove('hidden');
-                loadLogs();
-            } else {
-                alert('Invalid username or password.');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch events');
+                }
+
+                const events = await response.json();
+                const eventList = document.getElementById('event-list');
+                eventList.innerHTML = '';
+
+                events.forEach(event => {
+                    const li = document.createElement('li');
+                    li.textContent = `${event.title} - ${new Date(event.start_at).toLocaleString()}`;
+                    eventList.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                alert('Failed to load events. Check console for details.');
             }
-        });
-
-        function showLogPage() {
-            document.getElementById('welcomePage').classList.add('hidden');
-            document.getElementById('logPage').classList.remove('hidden');
-            loadLogs();
-        }
-
-        function addEntry() {
-            const date = document.getElementById('date').value;
-            const startTime = document.getElementById('startTime').value;
-            const endTime = document.getElementById('endTime').value;
-            const hours = parseFloat(document.getElementById('hours').value);
-            const weather = document.getElementById('weather').value;
-            const location = document.getElementById('location').value;
-            const notes = document.getElementById('notes').value;
-
-            if (!date || !startTime || !endTime || isNaN(hours) || !weather || !location) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-
-            const newEntry = { date, startTime, endTime, hours, weather, location, notes };
-            logs.push(newEntry);
-            localStorage.setItem('drivingLogs', JSON.stringify(logs));
-
-            document.getElementById('logForm').reset();
-            loadLogs();
-            updateProgress();
-        }
-
-        function loadLogs() {
-            const tableBody = document.getElementById('logTable').querySelector('tbody');
-            tableBody.innerHTML = '';
-            logs.forEach(log => {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${log.date}</td>
-                    <td>${log.startTime}</td>
-                    <td>${log.endTime}</td>
-                    <td>${log.hours}</td>
-                    <td>${log.weather}</td>
-                    <td>${log.location}</td>
-                    <td>${log.notes}</td>
-                `;
-                tableBody.appendChild(newRow);
-            });
-        }
-
-        function updateProgress() {
-            const totalHours = logs.reduce((sum, log) => sum + log.hours, 0);
-            const percentage = Math.min((totalHours / goalHours) * 100, 100);
-            const progressBar = document.getElementById('progress');
-            progressBar.style.width = percentage + '%';
-            progressBar.textContent = `${Math.round(percentage)}%`;
-        }
-
-        function exportToCSV() {
-            const table = document.getElementById('logTable');
-            const rows = Array.from(table.querySelectorAll('tr'));
-            const csv = rows.map(row => 
-                Array.from(row.querySelectorAll('th, td')).map(cell => cell.textContent).join(',')
-            ).join('\n');
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-
-            a.href = url;
-            a.download = 'driving_hours_log.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function logOut() {
-            document.getElementById('logPage').classList.add('hidden');
-            document.getElementById('welcomePage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
         }
     </script>
+
 </body>
 </html>
