@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Dashboard</title>
     <script>
+        async function register() {
+            if (!window.PublicKeyCredential) {
+                alert("WebAuthn not supported on this device.");
+                return;
+            }
+            try {
+                const cred = await navigator.credentials.create({ publicKey: { challenge: new Uint8Array(32), rp: { name: "Secure Dashboard" }, user: { id: new Uint8Array(16), name: "james", displayName: "James" }, pubKeyCredParams: [{ type: "public-key", alg: -7 }] } });
+                alert("Passkey created successfully!");
+                document.getElementById("sign-in-section").style.display = "none";
+                document.getElementById("auth-section").style.display = "block";
+            } catch (err) {
+                alert("Registration failed: " + err.message);
+            }
+        }
         async function authenticate() {
             if (!window.PublicKeyCredential) {
                 alert("WebAuthn not supported on this device.");
@@ -28,11 +42,15 @@
     </script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        #dashboard { display: none; }
+        #dashboard, #auth-section { display: none; }
         .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
     </style>
 </head>
 <body>
+    <div id="sign-in-section" class="container">
+        <h2>Create a Passkey</h2>
+        <button onclick="register()">Register Passkey</button>
+    </div>
     <div id="auth-section" class="container">
         <h2>Authenticate with Touch ID</h2>
         <button onclick="authenticate()">Login with Touch ID</button>
