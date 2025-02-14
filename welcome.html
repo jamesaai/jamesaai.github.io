@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Dashboard</title>
+    <script>
+        async function authenticate() {
+            if (!window.PublicKeyCredential) {
+                alert("WebAuthn not supported on this device.");
+                return;
+            }
+            try {
+                const cred = await navigator.credentials.get({ publicKey: { challenge: new Uint8Array(32), allowCredentials: [] } });
+                document.getElementById("auth-section").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } catch (err) {
+                alert("Authentication failed: " + err.message);
+            }
+        }
+        function submitContactForm() {
+            const name = document.getElementById("name").value;
+            const message = document.getElementById("message").value;
+            if (name && message) {
+                document.getElementById("contact-submissions").innerHTML += `<p><strong>${name}:</strong> ${message}</p>`;
+            }
+        }
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #dashboard { display: none; }
+        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="auth-section" class="container">
+        <h2>Authenticate with Touch ID</h2>
+        <button onclick="authenticate()">Login with Touch ID</button>
+    </div>
+    <div id="dashboard" class="container">
+        <h2>Welcome, James</h2>
+        <p>You have 5 new messages.</p>
+        <h3>Contact Form</h3>
+        <input type="text" id="name" placeholder="Your Name"><br><br>
+        <textarea id="message" placeholder="Your Message"></textarea><br><br>
+        <button onclick="submitContactForm()">Send</button>
+        <h3>Messages Received</h3>
+        <div id="contact-submissions"></div>
+    </div>
+</body>
+</html>
